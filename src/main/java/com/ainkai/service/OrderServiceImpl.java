@@ -6,13 +6,14 @@ import com.ainkai.model.Order;
 import com.ainkai.model.User;
 import com.ainkai.repository.CartRepo;
 import org.springframework.stereotype.Service;
+import com.ainkai.service.CartItemService;
 
 import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private CartRepo cartRepo;
+    private  CartRepo cartRepo;
     private  CartItemService cartItemService;
     private  ProductService productService;
 
