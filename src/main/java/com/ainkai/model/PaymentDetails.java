@@ -1,11 +1,30 @@
 package com.ainkai.model;
 
 
+import com.ainkai.user.domain.PaymentMethod;
+import com.ainkai.user.domain.PaymentStatus;
+
 public class PaymentDetails {
 
 
-    private String  paymentMethod;
-    private String status;
+    private PaymentMethod paymentMethod;
+    private PaymentStatus status;
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getRazorpayPaymentId() {
+        return razorpayPaymentId;
+    }
+
+    public void setRazorpayPaymentId(String razorpayPaymentId) {
+        this.razorpayPaymentId = razorpayPaymentId;
+    }
 
     public String getRazorpayPaymentLinkId() {
         return razorpayPaymentLinkId;
@@ -31,40 +50,15 @@ public class PaymentDetails {
         this.razorpayPaymentLinkStatus = razorpayPaymentLinkStatus;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
-    public String getRazorpayPaymentId() {
-        return razorpayPaymentId;
-    }
-
-    public void setRazorpayPaymentId(String razorpayPaymentId) {
-        this.razorpayPaymentId = razorpayPaymentId;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    private  String razorpayPaymentLinkId;
-    private String  razorpayPaymentLinkReferenceId;
-    private String  razorpayPaymentLinkStatus;
-    private String razorpayPaymentId;
-
-    public  PaymentDetails(){
-
-    }
-
-    public PaymentDetails(String paymentMethod, String razorpayPaymentId, String razorpayPaymentLinkId, String razorpayPaymentLinkReferenceId, String razorpayPaymentLinkStatus, String status) {
+    public PaymentDetails(PaymentMethod paymentMethod, String razorpayPaymentId, String razorpayPaymentLinkId, String razorpayPaymentLinkReferenceId, String razorpayPaymentLinkStatus, PaymentStatus status) {
         this.paymentMethod = paymentMethod;
         this.razorpayPaymentId = razorpayPaymentId;
         this.razorpayPaymentLinkId = razorpayPaymentLinkId;
@@ -72,4 +66,12 @@ public class PaymentDetails {
         this.razorpayPaymentLinkStatus = razorpayPaymentLinkStatus;
         this.status = status;
     }
+
+    public PaymentDetails() {
+    }
+
+    private  String razorpayPaymentLinkId;
+    private String  razorpayPaymentLinkReferenceId;
+    private String  razorpayPaymentLinkStatus;
+    private String razorpayPaymentId;
 }

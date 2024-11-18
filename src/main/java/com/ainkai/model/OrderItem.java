@@ -3,11 +3,10 @@ package com.ainkai.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.security.Provider;
 import java.time.LocalDateTime;
 
 @Entity
-public class OrderItems {
+public class OrderItem {
 
 
     @Id
@@ -33,7 +32,7 @@ public class OrderItems {
 
     private LocalDateTime deliveryDate;
 
-    public OrderItems(LocalDateTime deliveryDate, Integer discountedPrice, Long id, Order order, Integer price, Product product, int quantity, String size, Long userId) {
+    public OrderItem(LocalDateTime deliveryDate, Integer discountedPrice, Long id, Order order, Integer price, Product product, int quantity, String size, Long userId) {
         this.deliveryDate = deliveryDate;
         this.discountedPrice = discountedPrice;
         this.id = id;
@@ -45,7 +44,7 @@ public class OrderItems {
         this.userId = userId;
     }
 
-    public OrderItems(){
+    public OrderItem(){
 
     }
     public LocalDateTime getDeliveryDate() {

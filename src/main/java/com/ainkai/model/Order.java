@@ -1,6 +1,7 @@
 package com.ainkai.model;
 
 
+import com.ainkai.user.domain.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,68 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 public class Order {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="order_id")
     private String orderId;
-
-    @ManyToOne
-    private  User user;
-
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
-    private List<OrderItems> orderItemsList  = new ArrayList<>();
-
-
-    @Column(name="order_date")
-    private LocalDateTime oderDate;
-
-    @Column(name="delivery_date")
-    private LocalDateTime deliveryDate;
-
-    @OneToOne
-    private Address shippingAddress;
-
-    @Embedded
-    private PaymentDetails paymentDetails = new PaymentDetails();
-
-    @Column(name="total_price")
-    private double totalPrice;
-
-    private Integer totalDiscountedPrice;
-
-    private Integer discount;
-
-    @Column(name = "order_status")
-    private String OrderStatus;
-
-    private int toalItem;
-
-    private  LocalDateTime createdAt;
-
-    public Order(){
-
-    }
-
-    public Order(LocalDateTime createdAt, LocalDateTime deliveryDate, Integer discount, Long id, LocalDateTime oderDate, String orderId, List<OrderItems> orderItemsList, String orderStatus, PaymentDetails paymentDetails, Address shippingAddress, int toalItem, Integer totalDiscountedPrice, double totalPrice, User user) {
-        this.createdAt = createdAt;
-        this.deliveryDate = deliveryDate;
-        this.discount = discount;
-        this.id = id;
-        this.oderDate = oderDate;
-        this.orderId = orderId;
-        this.orderItemsList = orderItemsList;
-        OrderStatus = orderStatus;
-        this.paymentDetails = paymentDetails;
-        this.shippingAddress = shippingAddress;
-        this.toalItem = toalItem;
-        this.totalDiscountedPrice = totalDiscountedPrice;
-        this.totalPrice = totalPrice;
-        this.user = user;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -103,12 +50,12 @@ public class Order {
         this.id = id;
     }
 
-    public LocalDateTime getOderDate() {
-        return oderDate;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 
-    public void setOderDate(LocalDateTime oderDate) {
-        this.oderDate = oderDate;
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
 
     public String getOrderId() {
@@ -119,19 +66,19 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public List<OrderItems> getOrderItemsList() {
-        return orderItemsList;
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
     }
 
-    public void setOrderItemsList(List<OrderItems> orderItemsList) {
-        this.orderItemsList = orderItemsList;
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
-    public String getOrderStatus() {
+    public com.ainkai.user.domain.OrderStatus getOrderStatus() {
         return OrderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(com.ainkai.user.domain.OrderStatus orderStatus) {
         OrderStatus = orderStatus;
     }
 
@@ -151,20 +98,20 @@ public class Order {
         this.shippingAddress = shippingAddress;
     }
 
-    public int getToalItem() {
-        return toalItem;
-    }
-
-    public void setToalItem(int toalItem) {
-        this.toalItem = toalItem;
-    }
-
     public Integer getTotalDiscountedPrice() {
         return totalDiscountedPrice;
     }
 
     public void setTotalDiscountedPrice(Integer totalDiscountedPrice) {
         this.totalDiscountedPrice = totalDiscountedPrice;
+    }
+
+    public int getTotalItem() {
+        return totalItem;
+    }
+
+    public void setTotalItem(int totalItem) {
+        this.totalItem = totalItem;
     }
 
     public double getTotalPrice() {
@@ -182,4 +129,34 @@ public class Order {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @ManyToOne
+    private  User user;
+
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItemList = new ArrayList<>();
+
+
+    private LocalDateTime orderDate;
+
+    private LocalDateTime deliveryDate;
+
+    @OneToOne
+    private Address shippingAddress;
+
+    @Embedded
+    private PaymentDetails paymentDetails = new PaymentDetails();
+
+    private double totalPrice;
+
+    private Integer totalDiscountedPrice;
+
+    private Integer discount;
+
+    private OrderStatus OrderStatus;
+
+    private int totalItem;
+
+    private  LocalDateTime createdAt;
+
 }
