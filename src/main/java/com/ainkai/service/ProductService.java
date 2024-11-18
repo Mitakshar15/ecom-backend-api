@@ -22,5 +22,8 @@ public interface ProductService {
 
  public Page<Product> getAllProduct(String category, List<String> colors,List<String> sizes,Integer minPrice, Integer maxPrice,Integer minDiscount,String sort, String stock, Integer pageNumber,Integer pageSize);
 
+ public List<Product> getAllProducts();
+
+ public List<Product> searchProduct(String query);
 
 }

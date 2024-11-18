@@ -158,4 +158,14 @@ public class ProductServiceImpl implements ProductService {
 
         return filteredProducts;
     }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepo.findAll();
+    }
+
+    @Override
+    public List<Product> searchProduct(String query) {
+        return List.of();
+    }
 }
