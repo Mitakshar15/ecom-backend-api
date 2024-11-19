@@ -34,11 +34,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(CreateProductRequest request) {
+    public Product createProduct(CreateProductRequest request)throws ProductException {
          //Create A Product Here
         Category topLevel = categoryRepo.findByName(request.getTopLevelCategory());
+        //Check if any other product exists with same title
+        if(!isProductExists(request.getTitle())) {
 
-        if(topLevel != null){
+        if(topLevel == null){
             Category topLevelCategory = new Category();
             topLevelCategory.setName(request.getTopLevelCategory());
             topLevelCategory.setLevel(1);
@@ -48,21 +50,21 @@ public class ProductServiceImpl implements ProductService {
 
         Category secondLevel = categoryRepo.findByNameAndParent(request.getSecondLevelCategory(),topLevel.getName());
 
-        if(secondLevel !=null){
+        if(secondLevel ==null){
             Category secondLevelCategory = new Category();
             secondLevelCategory.setName(request.getSecondLevelCategory());
             secondLevelCategory.setLevel(2);
-
+            secondLevelCategory.setParentCategory(topLevel);
             secondLevel = categoryRepo.save(secondLevelCategory);
         }
 
         Category thirdLevel = categoryRepo.findByNameAndParent(request.getThirdLevelCategory(),secondLevel.getName());
 
-        if(thirdLevel !=null){
+        if(thirdLevel ==null){
             Category thirdLevelCategory = new Category();
             thirdLevelCategory.setName(request.getThirdLevelCategory());
             thirdLevelCategory.setLevel(3);
-
+            thirdLevelCategory.setParentCategory(secondLevel);
             thirdLevel = categoryRepo.save(thirdLevelCategory);
         }
 
@@ -85,6 +87,10 @@ public class ProductServiceImpl implements ProductService {
 
 
         return savedProduct;
+
+        }
+        else
+            throw new ProductException("PRODUCT ALREDY CREATED");
     }
 
     @Override
@@ -167,5 +173,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> searchProduct(String query) {
         return List.of();
+    }
+
+    @Override
+    public boolean isProductExists(String title) {
+
+        Product product = productRepo.findProductByName(title);
+        if(product !=null){
+            return true;
+        }
+        return false;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProductService {
 
 
- public Product createProduct(CreateProductRequest request);
+ public Product createProduct(CreateProductRequest request)throws ProductException;
 
  public  String deleteProduct(Long productId) throws ProductException;
 
@@ -25,5 +25,7 @@ public interface ProductService {
  public List<Product> getAllProducts();
 
  public List<Product> searchProduct(String query);
+
+ public boolean isProductExists(String  title);
 
 }

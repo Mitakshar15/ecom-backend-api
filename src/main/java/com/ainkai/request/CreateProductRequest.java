@@ -2,7 +2,7 @@ package com.ainkai.request;
 
 import com.ainkai.model.Size;
 
-import java.sql.Struct;
+
 import java.util.HashSet;
 import java.util.Set;
 
