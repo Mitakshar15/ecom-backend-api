@@ -23,7 +23,7 @@ public class AdminProductController {
 
 
     @PostMapping("/products/")
-    public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest request){
+    public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest request)throws ProductException{
 
         Product product = productService.createProduct(request);
 
