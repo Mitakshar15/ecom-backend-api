@@ -26,6 +26,6 @@ public interface ProductService {
 
  public List<Product> searchProduct(String query);
 
- public boolean isProductExists(String  title);
+ public boolean isProductExists(String  title,String brand,String color);
 
 }

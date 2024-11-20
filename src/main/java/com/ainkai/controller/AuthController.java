@@ -5,10 +5,12 @@ package com.ainkai.controller;
 
 import com.ainkai.config.JwtProvider;
 import com.ainkai.exceptions.UserException;
+import com.ainkai.model.Cart;
 import com.ainkai.model.User;
 import com.ainkai.repository.UserRepo;
 import com.ainkai.request.LoginRequest;
 import com.ainkai.response.AuthResponse;
+import com.ainkai.service.CartService;
 import com.ainkai.service.CustomUserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +36,15 @@ public class AuthController {
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
     private CustomUserServiceImpl customUserService;
-
+    private CartService cartService;
     
     //This constructor uses constructor-based dependency injection to initialize the controller's dependencies.
-    public  AuthController(UserRepo userRepo,CustomUserServiceImpl customUserService , PasswordEncoder passwordEncoder,JwtProvider jwtProvider){
+    public  AuthController(UserRepo userRepo,CustomUserServiceImpl customUserService , PasswordEncoder passwordEncoder,JwtProvider jwtProvider,CartService cartService){
         this.userRepo = userRepo;
         this.customUserService = customUserService;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
+        this.cartService = cartService;
     }
      
     // Handles POST requests to "/auth/signup".
@@ -71,6 +74,8 @@ public class AuthController {
         createdUser.setMobile(mobile);
         createdUser.setRole(role);
         User saveduser = userRepo.save(createdUser);
+        Cart cart = cartService.createCart(saveduser);
+
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(saveduser.getEmail(),saveduser.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
