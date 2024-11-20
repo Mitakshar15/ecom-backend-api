@@ -38,7 +38,6 @@ public class ProductServiceImpl implements ProductService {
          //Create A Product Here
         Category topLevel = categoryRepo.findByName(request.getTopLevelCategory());
         //Check if any other product exists with same title
-        if(!isProductExists(request.getTitle())) {
 
         if(topLevel == null){
             Category topLevelCategory = new Category();
@@ -83,14 +82,17 @@ public class ProductServiceImpl implements ProductService {
         product.setSizes(request.getSize());
         product.setImageUrl(request.getImageUrl());
 
-        Product savedProduct = productRepo.save(product);
-
-
-        return savedProduct;
-
+        if(!isProductExists(product.getTitle(),product.getBrand(),product.getColor())){
+            Product savedProduct = productRepo.save(product);
+            return  savedProduct;
         }
-        else
-            throw new ProductException("PRODUCT ALREDY CREATED");
+        else {
+            throw  new ProductException("PRODUCT ALREDY EXISTS");
+        }
+
+
+
+
     }
 
     @Override
@@ -150,7 +152,7 @@ public class ProductServiceImpl implements ProductService {
                 productList = productList.stream().filter(p->p.getQuantity()>0).collect(Collectors.toList());
             }
             else if(stock.equals("out_of_stock")){
-                productList = productList.stream().filter(p->p.getQuantity()<1).collect(Collectors.toUnmodifiableList());
+                productList = productList.stream().filter(p->p.getQuantity()<1).collect(Collectors.toList());
             }
         }
 
@@ -176,9 +178,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean isProductExists(String title) {
+    public boolean isProductExists(String title,String brand, String color) {
 
-        Product product = productRepo.findProductByName(title);
+        Product product = productRepo.findProductByName(title,brand,color);
         if(product !=null){
             return true;
         }

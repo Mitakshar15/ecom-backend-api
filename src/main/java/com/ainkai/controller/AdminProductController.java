@@ -8,21 +8,20 @@ import com.ainkai.response.ApiResponse;
 import com.ainkai.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/products")
 public class AdminProductController {
 
     @Autowired
     private ProductService productService;
 
 
-    @PostMapping("/products/")
+    @PostMapping("/")
     public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest request)throws ProductException{
 
         Product product = productService.createProduct(request);
@@ -30,7 +29,7 @@ public class AdminProductController {
         return new ResponseEntity<Product>(product, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{productId}/delete")
+    @DeleteMapping("/{productId}/delete")
     public ResponseEntity<ApiResponse> deleteProductHandler(@PathVariable Long productId) throws ProductException {
 
      productService.deleteProduct(productId);
@@ -54,6 +53,21 @@ public class AdminProductController {
 
         Product product   = productService.updateProduct(productId,req);
         return  new ResponseEntity<>(product,HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/create")
+    public  ResponseEntity<ApiResponse> createMultipleProductHandler(@RequestBody CreateProductRequest[] requests) throws  ProductException{
+
+
+        for(CreateProductRequest product : requests){
+            productService.createProduct(product);
+        }
+
+        ApiResponse response = new ApiResponse("Products Created Succesfully",true);
+        return  new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+
+
     }
 
 
