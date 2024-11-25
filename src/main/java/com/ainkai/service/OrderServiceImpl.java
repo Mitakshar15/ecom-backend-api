@@ -116,36 +116,51 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
-        return null;
+
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(OrderStatus.PLACED);
+        order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
+
+        return   orderRepo.save(order);
     }
 
     @Override
     public Order confirmedOrder(Long orderId) throws OrderException {
-        return null;
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(OrderStatus.CONFIRMED);
+        return   orderRepo.save(order);
     }
 
     @Override
     public Order shippedOrder(Long orderId) throws OrderException {
-        return null;
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(OrderStatus.SHIPPED);
+        return   orderRepo.save(order);
     }
 
     @Override
     public Order deliveredOrder(Long orderId) throws OrderException {
-        return null;
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(OrderStatus.DELIVERED);
+        return  order;
     }
 
     @Override
     public Order cancledOrder(Long orderId) throws OrderException {
-        return null;
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        return  orderRepo.save(order);
     }
 
     @Override
     public List<Order> getAllOrders() {
-        return List.of();
+       return  orderRepo.findAll();
     }
 
     @Override
     public void deleteOrder(Long orderId) throws OrderException {
+        Order order = findOrderById(orderId);
+        orderRepo.deleteById(orderId);
 
     }
 }

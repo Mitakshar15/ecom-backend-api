@@ -50,6 +50,7 @@ public class userServiceImpl implements UserService{
 
     @Override
     public List<User> findAllUsers() {
-        return List.of();
+        List<User> users = userRepo.findAllByOrderByCreatedAtDesc();
+        return users;
     }
 }

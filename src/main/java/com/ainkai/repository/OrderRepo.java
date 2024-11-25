@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface OrderRepo extends JpaRepository<Order,Long> {
 
-    @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND (o.OrderStatus = PLACED OR o.OrderStatus = CONFIRMED OR o.OrderStatus = SHIPPED OR o.OrderStatus = DELIVERED)")
+    /*  NOTE: ADD A METHOD TO RETURN ONLY A LIST OF ORDER_ID INORDER TO HIDE THE USERDETAILS FROM THE CONSOLE */
+
+
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND (o.OrderStatus = PLACED OR o.OrderStatus = CONFIRMED OR o.OrderStatus = SHIPPED OR o.OrderStatus = DELIVERED OR o.OrderStatus = PENDING OR o.OrderStatus = CANCELLED)")
     public List<Order> getUsersOrders(@Param("userId") Long userId);
 
     List<Order> findAllByOrderByCreatedAtDesc();

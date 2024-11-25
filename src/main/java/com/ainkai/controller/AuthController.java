@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import java.time.LocalDateTime;
 
 
 @RestController
@@ -73,6 +73,7 @@ public class AuthController {
         createdUser.setLastName(lastName);
         createdUser.setMobile(mobile);
         createdUser.setRole(role);
+        createdUser.setCreatedAt(LocalDateTime.now());
         User saveduser = userRepo.save(createdUser);
         Cart cart = cartService.createCart(saveduser);
 
