@@ -63,7 +63,11 @@ public class AuthController {
         User isEmailExist = userRepo.findByEmail(email);
          
         if(isEmailExist != null){
-            throw  new UserException(":: EMAIL IS ALREDY USED WITH ANOTHER ACCOUNT ::");
+            AuthResponse errorResponse = new AuthResponse();
+            errorResponse.setJwt(null);
+            errorResponse.setMessage("USER ALREDY EXISTS");
+            return new ResponseEntity<AuthResponse>(errorResponse, HttpStatus.CREATED);
+          //  throw  new UserException(":: EMAIL IS ALREDY USED WITH ANOTHER ACCOUNT ::");
         }
 
         User createdUser = new User();
