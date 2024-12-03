@@ -6,6 +6,8 @@ import threading
 # API endpoint for create order
 url = "http://localhost:5454/api/orders/"
 
+start_time = time.time()
+
 # Static request data for order creation
 static_data = {
     "firstName": "Mitakshara",
@@ -52,4 +54,8 @@ with ThreadPoolExecutor(max_workers=10) as executor:  # Set max_workers=1 for se
     futures = [executor.submit(send_request, i) for i in range(1, 501)]
     for future in as_completed(futures):  # Ensure completion of all tasks
         future.result()
+        
+end_time = time.time()
+execution_time = end_time - start_time
+print(f"TIME TAKEN FOR EXECUION : {execution_time}  SECONDS ")
 
