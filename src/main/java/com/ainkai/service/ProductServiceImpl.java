@@ -82,17 +82,8 @@ public class ProductServiceImpl implements ProductService {
         product.setSizes(request.getSize());
         product.setImageUrl(request.getImageUrl());
 
-        if(!isProductExists(product.getTitle(),product.getBrand(),product.getColor())){
-            Product savedProduct = productRepo.save(product);
-            return  savedProduct;
-        }
-        else {
-            throw  new ProductException("PRODUCT ALREDY EXISTS");
-        }
-
-
-
-
+        Product savedProduct = productRepo.save(product);
+        return  savedProduct;
     }
 
     @Override
@@ -177,13 +168,4 @@ public class ProductServiceImpl implements ProductService {
         return List.of();
     }
 
-    @Override
-    public boolean isProductExists(String title,String brand, String color) {
-
-        Product product = productRepo.findProductByName(title,brand,color);
-        if(product !=null){
-            return true;
-        }
-        return false;
-    }
 }

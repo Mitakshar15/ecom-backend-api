@@ -9,6 +9,7 @@ import com.ainkai.model.User;
 import com.ainkai.repository.CartItemRepo;
 import com.ainkai.repository.CartRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -93,6 +94,21 @@ public class CartItemServiceImpl implements CartItemService{
             return  opt.get();
         }
         throw  new CartItemException("CART ITEM NOT FOUND WITH ID");
+
+
+    }
+
+    @Transactional
+    @Override
+    public void removeAllItems( Long cartId) throws CartItemException, UserException {
+
+
+
+         cartItemRepo.removeAllItems(cartId);
+
+
+
+
 
 
     }
