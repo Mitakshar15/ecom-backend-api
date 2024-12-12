@@ -9,7 +9,7 @@ url = "http://localhost:5454/auth/signup"
 
 # Function to generate unique email
 def generate_unique_email(index):
-    return f"salesSampleTest300.test{index}@example.com"
+    return f"ecomApiTestSample{index}@example.com"
 
 # Lock for synchronization
 lock = threading.Lock()
@@ -20,7 +20,8 @@ def send_request(index):
     global last_request_time
     unique_email = generate_unique_email(index)  # Generate unique email for each request
     data = {
-        "name": f"User{index}",
+        "firstName": f"User{index}",
+        "lastName": f"Name{index}",
         "email": unique_email,
         "password": "password123"
     }

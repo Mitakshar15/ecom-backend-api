@@ -46,4 +46,16 @@ public class CartItemController {
 
 
     }
+
+    @DeleteMapping("/removeAllItem/{cartId}")
+    public ResponseEntity<ApiResponse> removeAllCartItemsHandler(@RequestHeader("Authorization")String jwt, @PathVariable Long cartId)throws UserException,CartItemException{
+
+      User user = userService.findUserProfileByJwt(jwt);
+      cartItemService.removeAllItems(cartId);
+      ApiResponse apiResponse = new ApiResponse();
+      apiResponse.setStatus(true);
+      apiResponse.setMessage("Cart Cleared After Confirming The Orders");
+
+        return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+    }
 }
