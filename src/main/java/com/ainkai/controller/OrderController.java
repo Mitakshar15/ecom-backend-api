@@ -2,6 +2,7 @@ package com.ainkai.controller;
 
 
 import com.ainkai.exceptions.OrderException;
+import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Address;
 import com.ainkai.model.Order;
@@ -25,6 +26,7 @@ public class OrderController {
   @Autowired
   private UserService userService;
 
+
     public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
@@ -32,7 +34,7 @@ public class OrderController {
 
 
    @PostMapping("/")
-   public ResponseEntity<Order> createOrderHandler(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt)throws UserException {
+   public ResponseEntity<Order> createOrderHandler(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt)throws UserException, ProductException {
 
        User user = userService.findUserProfileByJwt(jwt);
 

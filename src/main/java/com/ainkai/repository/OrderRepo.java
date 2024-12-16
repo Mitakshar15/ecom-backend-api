@@ -16,6 +16,10 @@ public interface OrderRepo extends JpaRepository<Order,Long> {
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND (o.OrderStatus = PLACED OR o.OrderStatus = CONFIRMED OR o.OrderStatus = SHIPPED OR o.OrderStatus = DELIVERED OR o.OrderStatus = PENDING OR o.OrderStatus = CANCELLED)")
     public List<Order> getUsersOrders(@Param("userId") Long userId);
 
+    @Query("SELECT o FROM Order o WHERE o.OrderStatus = PENDING")
+    public List<Order> getUsersPendingOrders();
+
+
     List<Order> findAllByOrderByCreatedAtDesc();
 
 

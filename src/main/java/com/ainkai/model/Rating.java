@@ -24,6 +24,19 @@ public class Rating {
     @JoinColumn(name="user_id",nullable=false)
     private User user;
 
+    @JsonIgnore
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="product_id",nullable=false)
+    private Product product;
+ 
+    
+    @Column(name = "rating")
+    private double rating;
+
+
+    private LocalDateTime createdAt;
+
+
     public double getRating() {
         return rating;
     }
@@ -74,19 +87,4 @@ public class Rating {
         this.rating = rating;
         this.user = user;
     }
-
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="product_id",nullable=false)
-    private Product product;
- 
-    
-    @Column(name = "rating")
-    private double rating;
-
-
-    private LocalDateTime createdAt;
-
-
-
 }

@@ -2,8 +2,10 @@ package com.ainkai.service;
 
 import com.ainkai.config.JwtProvider;
 import com.ainkai.exceptions.UserException;
+import com.ainkai.model.Address;
 import com.ainkai.model.User;
 import com.ainkai.repository.UserRepo;
+import com.ainkai.request.AddressRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,4 +55,7 @@ public class userServiceImpl implements UserService{
         List<User> users = userRepo.findAllByOrderByCreatedAtDesc();
         return users;
     }
+
+
+
 }

@@ -1,11 +1,13 @@
 package com.ainkai.service;
 
+import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
+import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.*;
 import com.ainkai.repository.*;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
-import org.aspectj.weaver.ast.Or;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,26 +31,52 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemRepo orderItemRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private  UserService userService;
+    @Autowired
+    private OrderConfirmationEmail orderConfirmationEmailsender;
+    @Autowired
+    private  ProductService productService;
 
-    public OrderServiceImpl(AddressRepo addressRepo, CartService cartService, OrderItemRepo orderItemRepo, OrderItemService orderItemService, OrderRepo orderRepo, UserRepo userRepo) {
+    public OrderServiceImpl(AddressRepo addressRepo, CartService cartService, OrderItemRepo orderItemRepo, OrderItemService orderItemService, OrderRepo orderRepo, UserRepo userRepo,OrderConfirmationEmail orderConfirmationEmailsender,UserService userService,ProductService productService) {
         this.addressRepo = addressRepo;
         this.cartService = cartService;
         this.orderItemRepo = orderItemRepo;
         this.orderItemService = orderItemService;
         this.orderRepo = orderRepo;
         this.userRepo = userRepo;
+        this.orderConfirmationEmailsender = orderConfirmationEmailsender;
+        this.userService = userService;
+        this.productService = productService;
     }
 
     @Override
-    public Order createOrder(User user, Address shippingAddress) {
+    public Order createOrder(User user, Address shippingAddress)throws ProductException {
         //Set The User for Shiping address
         shippingAddress.setUser(user);
         //after saving the user, save to the database
-        Address address = addressRepo.save(shippingAddress);
-        //add the saved address to the user Addresses List
-        user.getAddresses().add(address);
-        //save the User
-        userRepo.save(user);
+
+        //Add Checks for Alredy existing Address
+        Address finalAddress = new Address();
+
+        if(isShippingAddressExists(user.getId(),shippingAddress)){
+
+           Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
+           if(opt.isPresent()){
+               finalAddress = opt.get();
+           }
+
+        }
+        else{
+
+            Address address = addressRepo.save(shippingAddress);
+            finalAddress = address;
+            //add the saved address to the user Addresses List
+            user.getAddresses().add(address);
+            //save the User
+            userRepo.save(user);
+        }
+
 
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
@@ -69,6 +97,11 @@ public class OrderServiceImpl implements OrderService {
 
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
+            Product product = orderItem.getProduct();
+            if(product.getQuantity()>orderItem.getQuantity()){
+                product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            }
+            productService.updateProduct(product.getId(),product);
         }
 
         Order createdOrder = new Order();
@@ -79,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setDiscount(cart.getDiscount());
         createdOrder.setTotalItem(cart.getTotalItem());
         createdOrder.setOrderId(user.getLastName() + (cart.getId()));
-        createdOrder.setShippingAddress(address);
+        createdOrder.setShippingAddress(finalAddress);
         createdOrder.setOrderDate(LocalDateTime.now());
         createdOrder.setOrderStatus(OrderStatus.PENDING);
         createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
@@ -115,12 +148,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order placedOrder(Long orderId) throws OrderException {
+    public Order placedOrder(Long orderId) throws OrderException, MessagingException {
 
         Order order = findOrderById(orderId);
         order.setOrderStatus(OrderStatus.PLACED);
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
-
         return   orderRepo.save(order);
     }
 
@@ -161,6 +193,25 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
         orderRepo.deleteById(orderId);
+
+    }
+
+    @Override
+    public boolean isShippingAddressExists(Long userId, Address address) {
+
+        Optional<User> opt = userRepo.findById(userId);
+        User user = new User();
+        if(opt.isPresent()){
+         user = opt.get();
+        }
+        if(addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(),address.getCity(),address.getState(),address.getZipCode(),user)){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+
 
     }
 }
