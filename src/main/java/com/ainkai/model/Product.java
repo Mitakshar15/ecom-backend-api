@@ -53,7 +53,7 @@ public class Product {
   @Column(name="image_url")
   private String imageUrl;
 
-   @JsonIgnore
+
   @OneToMany(mappedBy="product",cascade=CascadeType.ALL,orphanRemoval=true)
   private List<Rating> ratings  = new ArrayList<>();
 
