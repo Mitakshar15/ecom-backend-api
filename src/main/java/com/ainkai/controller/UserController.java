@@ -2,17 +2,20 @@ package com.ainkai.controller;
 
 
 import com.ainkai.exceptions.UserException;
+import com.ainkai.model.Address;
 import com.ainkai.model.User;
+import com.ainkai.repository.UserRepo;
+import com.ainkai.request.AddressRequest;
+import com.ainkai.request.EditUserRequest;
+import com.ainkai.response.ApiResponse;
 import com.ainkai.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
@@ -41,5 +44,75 @@ public class UserController {
         return  new ResponseEntity<>(users,HttpStatus.ACCEPTED);
 
     }
+
+    @PutMapping("/editProfile")
+    public ResponseEntity<User>updateUserDetailHandler(@RequestHeader("Authorization") String jwt, @RequestBody EditUserRequest userRequest) throws UserException {
+
+        User loggedUser = userService.findUserProfileByJwt(jwt);
+        if(Objects.equals(loggedUser.getId(), userRequest.getUserId())){
+            User updatedUser = userService.editUser(userRequest);
+            return new ResponseEntity<User>(updatedUser,HttpStatus.OK);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    @PostMapping("/address/edit")
+    public ResponseEntity<Address>addDeliveryAddress(@RequestHeader("Authorization") String jwt,@RequestBody AddressRequest request) throws UserException {
+
+       User user  = userService.findUserProfileByJwt(jwt);
+       if(Objects.equals(user.getId(), request.getUserId())){
+           Address newAddress = userService.addNewAddress(request);
+           if(newAddress!=null){
+               return new ResponseEntity<>(newAddress,HttpStatus.CREATED);
+           }
+           else {
+               return ResponseEntity.notFound().build();
+           }
+
+       }
+       else{
+           return ResponseEntity.notFound().build();
+       }
+
+    }
+
+    @DeleteMapping("/address/delete/{addressId}")
+    public ResponseEntity<ApiResponse> deleteDeliveryAddress(@RequestHeader("Authorization") String jwt,@PathVariable Long addressId) throws UserException {
+
+        User user = userService.findUserProfileByJwt(jwt);
+        ApiResponse apiResponse = new ApiResponse();
+        if(user!=null){
+            userService.deleteAddress(addressId);
+            apiResponse.setStatus(true);
+            apiResponse.setMessage("ADDRESS DELETED SUCCESFULLY");
+            return  new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        else {
+            apiResponse.setMessage("FAILED TO DELETE");
+            apiResponse.setStatus(false);
+            return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/address/edit/{addressId}")
+    public ResponseEntity<Address> editAddressHandler(@RequestHeader("Authorization") String jwt,@PathVariable Long addressId,@RequestBody AddressRequest addressRequest) throws UserException {
+
+        User user = userService.findUserProfileByJwt(jwt);
+        if(Objects.equals(user.getId(),addressRequest.getUserId())){
+            Address editedAddress = userService.editAddress(addressRequest,addressId);
+            return new ResponseEntity<>(editedAddress,HttpStatus.ACCEPTED);
+        }
+        else{
+
+            return ResponseEntity.notFound().build();
+
+        }
+
+    }
+
+
 
 }

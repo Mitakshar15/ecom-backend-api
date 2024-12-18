@@ -1,7 +1,11 @@
 package com.ainkai.service;
 
 import com.ainkai.exceptions.UserException;
+import com.ainkai.model.Address;
 import com.ainkai.model.User;
+import com.ainkai.request.AddressRequest;
+import com.ainkai.request.EditUserRequest;
+import com.ainkai.response.ApiResponse;
 
 import java.util.List;
 
@@ -14,4 +18,11 @@ public interface UserService {
 
   public List<User> findAllUsers();
 
+  public User editUser(EditUserRequest user);
+
+  public Address addNewAddress(AddressRequest addressRequest);
+
+  public void deleteAddress(Long addressId);
+
+  public Address editAddress(AddressRequest addressRequest,Long addressId);
 }

@@ -1,6 +1,7 @@
 package com.ainkai.request;
 
 import com.ainkai.model.Product;
+import com.ainkai.model.Rating;
 import com.ainkai.model.Review;
 import lombok.Getter;
 import lombok.Setter;

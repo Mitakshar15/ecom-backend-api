@@ -4,12 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Review {
@@ -33,7 +28,9 @@ public class Review {
 
     private LocalDateTime createdAt;
 
-
+    @OneToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="rating",nullable=false)
+    private Rating rating;
 
 
 
@@ -41,7 +38,15 @@ public class Review {
     public Review(){
 
     }
-    
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
+    }
+
     public Review(Long id, String review, Product product, User user, LocalDateTime createdAt) {
         this.id = id;
         this.review = review;

@@ -6,17 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
 
 @Entity
 public class Product {
@@ -60,6 +52,7 @@ public class Product {
 
   @Column(name="image_url")
   private String imageUrl;
+
 
   @OneToMany(mappedBy="product",cascade=CascadeType.ALL,orphanRemoval=true)
   private List<Rating> ratings  = new ArrayList<>();

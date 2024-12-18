@@ -1,11 +1,14 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Order;
 import com.ainkai.response.ApiResponse;
 import com.ainkai.service.OrderService;
-import org.aspectj.weaver.ast.Or;
+import com.ainkai.service.UserService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,10 @@ public class AdminOrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private OrderConfirmationEmail orderConfirmationEmailsender;
 
     @GetMapping("/")
     public ResponseEntity<List<Order>> getAllOrderHandler(){
@@ -58,6 +65,13 @@ public class AdminOrderController {
          response.setMessage("SUCCESFULLY DELETED THE ORDER : " + orderId);
          response.setStatus(true);
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+    }
+    @PutMapping("/{orderId}/placed")
+    public  ResponseEntity<Order> placeOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException, MessagingException, UserException {
+        Order order = orderService.placedOrder(orderId);
+//        String email =userService.findUserProfileByJwt(jwt).getEmail();
+//        orderConfirmationEmailsender.sendEmail(email,"ORDER PLACED","THANK YOU "+ userService.findUserProfileByJwt(jwt).getFirstName() +" YOUR ORDDER HAS BEEN PLACED " + " ORDER ID : "+order.getOrderId()+" SHIPPING ADDRESS : "+order.getShippingAddress().getStreetAddress()+ " "+order.getShippingAddress().getCity()+" "+order.getShippingAddress().getZipCode());
+        return new ResponseEntity<>(order,HttpStatus.ACCEPTED);
     }
 
 
