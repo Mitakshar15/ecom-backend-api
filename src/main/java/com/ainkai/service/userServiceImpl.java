@@ -109,5 +109,22 @@ public class userServiceImpl implements UserService{
 
     }
 
+    @Override
+    public Address editAddress(AddressRequest addressRequest, Long addressId) {
+
+        Optional<User> user = userRepo.findById(addressId);
+        Optional<Address> opt = addressRepo.findById(addressId);
+        Address address = opt.get();
+        address.setFirstName(addressRequest.getFirstName());
+        address.setLastName(addressRequest.getLastName());
+        address.setStreetAddress(addressRequest.getStreetAddress());
+        address.setCity(addressRequest.getCity());
+        address.setState(addressRequest.getState());
+        address.setZipCode(addressRequest.getZipCode());
+        address.setMobile(addressRequest.getMobile());
+
+        return  addressRepo.save(address);
+    }
+
 
 }

@@ -23,4 +23,6 @@ public interface UserService {
   public Address addNewAddress(AddressRequest addressRequest);
 
   public void deleteAddress(Long addressId);
+
+  public Address editAddress(AddressRequest addressRequest,Long addressId);
 }
