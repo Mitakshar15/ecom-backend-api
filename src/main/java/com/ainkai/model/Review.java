@@ -28,6 +28,7 @@ public class Review {
 
     private LocalDateTime createdAt;
 
+
     @OneToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="rating",nullable=false)
     private Rating rating;

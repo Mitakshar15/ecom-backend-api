@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.ProductResponseDTO;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Product;
 import com.ainkai.request.CreateProductRequest;
@@ -26,22 +27,24 @@ public class ProductController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<Page<Product>> findProductByCategoryHandler(@RequestParam String category, @RequestParam List<String> color,@RequestParam List<String> size, @RequestParam Integer minPrice,@RequestParam Integer maxPrice,@RequestParam Integer minDiscount,@RequestParam String sort,@RequestParam String stock,@RequestParam Integer pageNumber, @RequestParam Integer pageSize){
+    public ResponseEntity<Page<ProductResponseDTO>> findProductByCategoryHandler(@RequestParam String category, @RequestParam List<String> color,@RequestParam List<String> size, @RequestParam Integer minPrice,@RequestParam Integer maxPrice,@RequestParam Integer minDiscount,@RequestParam String sort,@RequestParam String stock,@RequestParam Integer pageNumber, @RequestParam Integer pageSize){
 
         Page<Product> res = productService.getAllProduct(category,color,size,minPrice,maxPrice,minDiscount,sort,stock,pageNumber,pageSize);
-
+        Page<ProductResponseDTO> responseDTO = res.map(product -> {
+            return ProductResponseDTO.fromEntity(product);
+        });
 
         System.out.println("Complete Products");
-        return  new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+        return  new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED);
 
     }
 
     @GetMapping("/products/id/{productId}")
-    public ResponseEntity<Product> findProductByIdHandler( @PathVariable Long productId)throws ProductException {
+    public ResponseEntity<ProductResponseDTO> findProductByIdHandler( @PathVariable Long productId)throws ProductException {
 
         Product product  = productService.findProductById(productId);
 
-        return  new ResponseEntity<>(product,HttpStatus.ACCEPTED);
+        return  new ResponseEntity<>(ProductResponseDTO.fromEntity(product),HttpStatus.ACCEPTED);
 
     }
 

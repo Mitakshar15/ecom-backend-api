@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.OrderResponseDTO;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,34 +36,34 @@ public class OrderController {
 
 
    @PostMapping("/")
-   public ResponseEntity<Order> createOrderHandler(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt)throws UserException, ProductException {
+   public ResponseEntity<OrderResponseDTO> createOrderHandler(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt)throws UserException, ProductException {
 
        User user = userService.findUserProfileByJwt(jwt);
 
        Order order = orderService.createOrder(user,shippingAddress);
-
-       return new ResponseEntity<>(order, HttpStatus.OK);
+       OrderResponseDTO dto = OrderResponseDTO.fromEntity(order);
+       System.out.println(dto);
+       return new ResponseEntity<>(dto, HttpStatus.OK);
    }
 
 
    @GetMapping("/user")
-   public  ResponseEntity<List<Order>> userOrderHistory(@RequestHeader("Authorization")String jwt) throws UserException{
+   public  ResponseEntity<List<OrderResponseDTO>> userOrderHistory(@RequestHeader("Authorization")String jwt) throws UserException{
 
         /* Implement A method such that is should return only the orders and user id, instead of returning userdetails */
 
         User user = userService.findUserProfileByJwt(jwt);
 
         List<Order> orderList = orderService.usersOrderHistory(user.getId());
-
-        return  new ResponseEntity<>(orderList,HttpStatus.CREATED);
+        return  new ResponseEntity<>(OrderResponseDTO.fromEntityToList(orderList),HttpStatus.CREATED);
    }
 
    @GetMapping("/{id}")
-   public  ResponseEntity<Order> findOrderById(@PathVariable("id") Long orderId,@RequestHeader("Authorization")String jwt)throws UserException, OrderException{
+   public  ResponseEntity<OrderResponseDTO> findOrderById(@PathVariable("id") Long orderId,@RequestHeader("Authorization")String jwt)throws UserException, OrderException{
 
          User user = userService.findUserProfileByJwt(jwt);
          Order order = orderService.findOrderById(orderId);
-         return  new ResponseEntity<>(order,HttpStatus.CREATED);
+         return  new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.CREATED);
 
    }
 
