@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.UserResponseDTO;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
@@ -29,11 +30,11 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfileHandler(@RequestHeader("Authorization") String jwt)throws UserException{
+    public ResponseEntity<UserResponseDTO> getUserProfileHandler(@RequestHeader("Authorization") String jwt)throws UserException{
 
         System.out.println("INSIDE GET USER PROFILE HANDLER CONTROLLER ::");
         User user = userService.findUserProfileByJwt(jwt);
-        return  new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        return  new ResponseEntity<>(UserResponseDTO.fromEntity(user), HttpStatus.ACCEPTED);
 
     }
 
@@ -46,12 +47,12 @@ public class UserController {
     }
 
     @PutMapping("/editProfile")
-    public ResponseEntity<User>updateUserDetailHandler(@RequestHeader("Authorization") String jwt, @RequestBody EditUserRequest userRequest) throws UserException {
+    public ResponseEntity<UserResponseDTO>updateUserDetailHandler(@RequestHeader("Authorization") String jwt, @RequestBody EditUserRequest userRequest) throws UserException {
 
         User loggedUser = userService.findUserProfileByJwt(jwt);
         if(Objects.equals(loggedUser.getId(), userRequest.getUserId())){
             User updatedUser = userService.editUser(userRequest);
-            return new ResponseEntity<User>(updatedUser,HttpStatus.OK);
+            return new ResponseEntity<UserResponseDTO>(UserResponseDTO.fromEntity(updatedUser),HttpStatus.OK);
         }
         else {
             return ResponseEntity.notFound().build();

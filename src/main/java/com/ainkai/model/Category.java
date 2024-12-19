@@ -1,5 +1,6 @@
 package com.ainkai.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) //-> This will auto-generate a unique ID for each Category object.
+    @JsonIgnore
     private Long id;
 
     @NotNull

@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.OrderResponseDTO;
 import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.UserException;
@@ -28,34 +29,34 @@ public class AdminOrderController {
     private OrderConfirmationEmail orderConfirmationEmailsender;
 
     @GetMapping("/")
-    public ResponseEntity<List<Order>> getAllOrderHandler(){
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrderHandler(){
         List<Order> orderList = orderService.getAllOrders();
-        return new ResponseEntity<>(orderList, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(OrderResponseDTO.fromEntityToList(orderList), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/{orderId}/confirmed")
-    public ResponseEntity<Order> confirmedOrderHandler(@PathVariable Long orderId,
+    public ResponseEntity<OrderResponseDTO> confirmedOrderHandler(@PathVariable Long orderId,
                                                        @RequestHeader("Authorization") String jwt) throws OrderException{
         Order order=orderService.confirmedOrder(orderId);
-        return new ResponseEntity<Order>(order,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/{orderId}/shipped")
-    public  ResponseEntity<Order> shippedOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
+    public  ResponseEntity<OrderResponseDTO> shippedOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
        Order order = orderService.shippedOrder(orderId);
-       return new ResponseEntity<>(order,HttpStatus.ACCEPTED);
+       return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/{orderId}/delivered")
-    public  ResponseEntity<Order> deliveredOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
+    public  ResponseEntity<OrderResponseDTO> deliveredOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
         Order order = orderService.deliveredOrder(orderId);
-        return new ResponseEntity<>(order,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/{orderId}/canceled")
-    public  ResponseEntity<Order> canceledOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
+    public  ResponseEntity<OrderResponseDTO> canceledOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException{
         Order order = orderService.cancledOrder(orderId);
-        return new ResponseEntity<>(order,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{orderId}/delete")
@@ -67,11 +68,11 @@ public class AdminOrderController {
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
     }
     @PutMapping("/{orderId}/placed")
-    public  ResponseEntity<Order> placeOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException, MessagingException, UserException {
+    public  ResponseEntity<OrderResponseDTO> placeOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException, MessagingException, UserException {
         Order order = orderService.placedOrder(orderId);
 //        String email =userService.findUserProfileByJwt(jwt).getEmail();
 //        orderConfirmationEmailsender.sendEmail(email,"ORDER PLACED","THANK YOU "+ userService.findUserProfileByJwt(jwt).getFirstName() +" YOUR ORDDER HAS BEEN PLACED " + " ORDER ID : "+order.getOrderId()+" SHIPPING ADDRESS : "+order.getShippingAddress().getStreetAddress()+ " "+order.getShippingAddress().getCity()+" "+order.getShippingAddress().getZipCode());
-        return new ResponseEntity<>(order,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 
 

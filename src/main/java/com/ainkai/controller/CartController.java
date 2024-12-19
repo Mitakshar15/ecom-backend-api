@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.CartResponseDTO;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Cart;
@@ -25,12 +26,12 @@ public class CartController {
     private UserService userService;
 
     @GetMapping("/")
-    public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt)throws UserException{
+    public ResponseEntity<CartResponseDTO> findUserCart(@RequestHeader("Authorization") String jwt)throws UserException{
 
         User user = userService.findUserProfileByJwt(jwt);
         Cart cart = cartService.findUserCart(user.getId());
 
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+        return new ResponseEntity<>(CartResponseDTO.fromEntity(cart), HttpStatus.OK);
 
     }
 
