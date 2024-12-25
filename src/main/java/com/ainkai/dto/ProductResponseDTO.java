@@ -39,7 +39,7 @@ public class ProductResponseDTO {
 
     private String imageUrl;
 
-    private List<Rating> ratings;
+    private List<RatingResponseDTO> ratings;
 
     private List<ReviewResponseDTO> reviews;
 
@@ -58,7 +58,7 @@ public class ProductResponseDTO {
         dto.setDiscountPercent(product.getDiscountPercent());
         dto.setQuantity(product.getQuantity());
         dto.setDescription(product.getDescription());
-        dto.setRatings(product.getRatings());
+        dto.setRatings(RatingResponseDTO.fromEntityToList(product.getRatings()));
         dto.setReviews(ReviewResponseDTO.fromEntityToList(product.getReviews()));
         dto.setCreatedAt(product.getCreatedAt());
         dto.setImageUrl(product.getImageUrl());

@@ -94,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSize(item.getSize());
             orderItem.setUserId(item.getUserId());
-
+            orderItem.setDeliveryDate(LocalDateTime.now().plusDays(4));
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
             Product product = orderItem.getProduct();

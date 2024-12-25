@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.ProductResponseDTO;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Product;
 import com.ainkai.request.CreateProductRequest;
@@ -22,11 +23,11 @@ public class AdminProductController {
 
 
     @PostMapping("/")
-    public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest request)throws ProductException{
+    public ResponseEntity<ProductResponseDTO> createProductHandler(@RequestBody CreateProductRequest request)throws ProductException{
 
         Product product = productService.createProduct(request);
 
-        return new ResponseEntity<Product>(product, HttpStatus.CREATED);
+        return new ResponseEntity<ProductResponseDTO>(ProductResponseDTO.fromEntity(product), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{productId}/delete")
@@ -41,18 +42,18 @@ public class AdminProductController {
     }
 
     @GetMapping("/all")
-    public  ResponseEntity<List<Product>> findAllProductHandler(){
+    public  ResponseEntity<List<ProductResponseDTO>> findAllProductHandler(){
 
         List<Product> products = productService.getAllProducts();
-        return  new ResponseEntity<>(products,HttpStatus.OK);
+        return  new ResponseEntity<>(ProductResponseDTO.fromEntityToList(products),HttpStatus.OK);
 
     }
 
     @PutMapping("/{productId}/update")
-    public ResponseEntity<Product> updateProductHandler(@RequestBody Product req,@PathVariable Long productId)throws  ProductException{
+    public ResponseEntity<ProductResponseDTO> updateProductHandler(@RequestBody Product req,@PathVariable Long productId)throws  ProductException{
 
         Product product   = productService.updateProduct(productId,req);
-        return  new ResponseEntity<>(product,HttpStatus.CREATED);
+        return  new ResponseEntity<>(ProductResponseDTO.fromEntity(product),HttpStatus.CREATED);
     }
 
 

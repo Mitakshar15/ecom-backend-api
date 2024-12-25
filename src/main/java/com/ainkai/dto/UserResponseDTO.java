@@ -38,9 +38,6 @@ public class UserResponseDTO {
 
 
 
-    private List<Address> addresses;
-
-
 
     private List<PaymentInformation> paymentInformation;
 
@@ -53,7 +50,6 @@ public class UserResponseDTO {
     public static  UserResponseDTO fromEntity(User user){
        UserResponseDTO dto = new UserResponseDTO();
        dto.setId(user.getId());
-       dto.setAddresses(user.getAddresses());
        dto.setEmail(user.getEmail());
        dto.setMobile(user.getMobile());
        dto.setRole(user.getRole());

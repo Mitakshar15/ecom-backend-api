@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/search/{q}")
-    public ResponseEntity<List<Product>> searchProductHandler(@RequestParam String q){
+    public ResponseEntity<List<ProductResponseDTO>> searchProductHandler(@RequestParam String q){
 
         return  null;
     }

@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 public class Rating {
     
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
