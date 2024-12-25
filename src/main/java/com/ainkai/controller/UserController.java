@@ -1,10 +1,12 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.AddressResponseDTO;
 import com.ainkai.dto.UserResponseDTO;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
+import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;
 import com.ainkai.request.AddressRequest;
 import com.ainkai.request.EditUserRequest;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -113,6 +116,25 @@ public class UserController {
         }
 
     }
+
+    @GetMapping("/address")
+  public ResponseEntity<List<AddressResponseDTO>> getDeliveryAddress(@RequestHeader("Authorization") String jwt) throws UserException {
+
+        User user = userService.findUserProfileByJwt(jwt);
+        List<AddressResponseDTO> addressResponseDTOList= new ArrayList<>();
+        if(user==null){
+          return ResponseEntity.notFound().build();
+        }
+        else{
+
+            List<Address> addressList = userService.getAllUserAddresses(user.getId());
+            addressResponseDTOList = AddressResponseDTO.fromEntityList(addressList);
+
+            return new ResponseEntity<>(addressResponseDTOList,HttpStatus.ACCEPTED);
+
+        }
+
+  }
 
 
 

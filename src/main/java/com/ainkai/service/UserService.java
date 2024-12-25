@@ -25,4 +25,6 @@ public interface UserService {
   public void deleteAddress(Long addressId);
 
   public Address editAddress(AddressRequest addressRequest,Long addressId);
+
+  public List<Address> getAllUserAddresses(Long userId);
 }

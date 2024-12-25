@@ -126,5 +126,17 @@ public class userServiceImpl implements UserService{
         return  addressRepo.save(address);
     }
 
+    @Override
+    public List<Address> getAllUserAddresses(Long userId) {
+
+        List<Address>addressList = addressRepo.getAllByUser(userId);
+        if(addressList.size()>0){
+            return addressList;
+        }
+        else{
+            return List.of();
+        }
+    }
+
 
 }
