@@ -17,9 +17,11 @@ import jakarta.persistence.ManyToOne;
 public class Rating {
     
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_id",nullable=false)
     private User user;

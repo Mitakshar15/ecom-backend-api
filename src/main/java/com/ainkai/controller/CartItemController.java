@@ -1,5 +1,6 @@
 package com.ainkai.controller;
 
+import com.ainkai.dto.CartItemResponseDTO;
 import com.ainkai.exceptions.CartItemException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Cart;
@@ -36,13 +37,13 @@ public class CartItemController {
     }
 
     @PutMapping("/{cartItemId}")
-    public  ResponseEntity<CartItem> updateItemFromCart(@PathVariable Long cartItemId ,@RequestHeader("Authorization")String jwt,@RequestBody CartItem cartItemreq) throws CartItemException,UserException{
+    public  ResponseEntity<CartItemResponseDTO> updateItemFromCart(@PathVariable Long cartItemId , @RequestHeader("Authorization")String jwt, @RequestBody CartItem cartItemreq) throws CartItemException,UserException{
 
         User user = userService.findUserProfileByJwt(jwt);
 
         CartItem cartItem = cartItemService.updateCartItem(user.getId(),cartItemId,cartItemreq);
 
-        return  new ResponseEntity<>(cartItem,HttpStatus.ACCEPTED);
+        return  new ResponseEntity<>(CartItemResponseDTO.fromEntity(cartItem),HttpStatus.ACCEPTED);
 
 
     }

@@ -1,6 +1,7 @@
 package com.ainkai.controller;
 
 
+import com.ainkai.dto.ReviewResponseDTO;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Review;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,18 +30,19 @@ public class ReviewController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<Review> createReviewHandler(@RequestBody ReviewRequest request, @RequestHeader("Authorization")String jwt,@RequestParam("rating")Double rating)throws UserException, ProductException{
+    public ResponseEntity<ReviewResponseDTO> createReviewHandler(@RequestBody ReviewRequest request, @RequestHeader("Authorization")String jwt, @RequestParam("rating")Double rating)throws UserException, ProductException{
         User user = userService.findUserProfileByJwt(jwt);
         Review review = reviewService.createReview(request,user,rating);
 
-        return new ResponseEntity<Review>(review, HttpStatus.ACCEPTED);
+        return new ResponseEntity<ReviewResponseDTO>(ReviewResponseDTO.fromEntity(review), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{productId}")
-   public ResponseEntity<List<Review>> getAllReviewsHandler(@PathVariable("productId") Long productId)throws  ProductException{
+   public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsHandler(@PathVariable("productId") Long productId)throws  ProductException{
 
         List<Review> reviewList = reviewService.getAllProductReview(productId);
-        return  new ResponseEntity<>(reviewList,HttpStatus.OK);
+        List<ReviewResponseDTO> dtoList = ReviewResponseDTO.fromEntityToList(reviewList);
+        return  new ResponseEntity<>(dtoList,HttpStatus.OK);
 
 
    }
