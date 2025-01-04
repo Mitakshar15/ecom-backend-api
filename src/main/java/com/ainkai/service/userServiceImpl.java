@@ -10,12 +10,15 @@ import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;
 import com.ainkai.request.AddressRequest;
 import com.ainkai.request.EditUserRequest;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class userServiceImpl implements UserService{
 
     private UserRepo userRepo;
@@ -23,11 +26,7 @@ public class userServiceImpl implements UserService{
     private JwtProvider jwtProvider;
     private EcomApiUserMapper mapper;
 
-    public  userServiceImpl( UserRepo userRepo, JwtProvider jwtProvider,AddressRepo addressRepo){
-      this.userRepo = userRepo;
-      this.jwtProvider = jwtProvider;
-      this.addressRepo=addressRepo;
-    }
+
 
 
     @Override

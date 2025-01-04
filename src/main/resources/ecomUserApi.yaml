@@ -85,7 +85,7 @@ paths:
     get:
       tags:
         - ecomApi V1 User-Controller
-      summary: "GET Profile"
+      summary: "Get User Profile"
       operationId: getUserProfileHandler
       parameters:
         - name: "Authorization"
@@ -129,7 +129,7 @@ paths:
     put:
       tags:
         - ecomApi V1 User-Controller
-      summary: "PUT api/users/editProfile"
+      summary: "Edit Profile"
       operationId: updateProfileHandler
       parameters:
         - name: "Authorization"
@@ -195,7 +195,7 @@ paths:
               $ref: "./ecomApiComponents.yaml#/components/schemas/AddressRequest"
         required: true
       responses:
-        "200":
+        "201":
           description: "OK"
           content:
             '*/*':
