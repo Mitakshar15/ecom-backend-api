@@ -2,8 +2,10 @@ package com.ainkai.service;
 
 import com.ainkai.config.JwtProvider;
 import com.ainkai.exceptions.UserException;
+import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
+import com.ainkai.model.dtos.EditProfileRequest;
 import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;
 import com.ainkai.request.AddressRequest;
@@ -19,6 +21,7 @@ public class userServiceImpl implements UserService{
     private UserRepo userRepo;
     private AddressRepo addressRepo;
     private JwtProvider jwtProvider;
+    private EcomApiUserMapper mapper;
 
     public  userServiceImpl( UserRepo userRepo, JwtProvider jwtProvider,AddressRepo addressRepo){
       this.userRepo = userRepo;
@@ -36,21 +39,14 @@ public class userServiceImpl implements UserService{
         }
 
 
-        throw new UserException(":: USER NOT FOUND WITH ID ::"+ userId);
+        throw new UserException("ERROR KEY",":: USER NOT FOUND WITH ID ::"+ userId);
     }
 
     @Override
-    public User findUserProfileByJwt(String jwt) throws UserException {
+    public User findUserProfileByJwt(String jwt) {
 
         String email = jwtProvider.getEmailFromJwtToken(jwt);
-
         User user  =userRepo.findByEmail(email);
-
-        if(user ==null){
-            throw new UserException(":: USER NOT FOUND FOR ::"+ email);
-        }
-
-
         return user;
     }
 
@@ -61,9 +57,9 @@ public class userServiceImpl implements UserService{
     }
 
     @Override
-    public User editUser(EditUserRequest userRequest) {
+    public User editUser(EditProfileRequest userRequest) {
 
-        Optional<User> opt = userRepo.findById(userRequest.getUserId());
+        Optional<User> opt = userRepo.findById(userRequest.getId());
 
         if(opt.isPresent()){
 
@@ -80,20 +76,20 @@ public class userServiceImpl implements UserService{
     }
 
     @Override
-    public Address addNewAddress(AddressRequest addressRequest) {
+    public Address addNewAddress(com.ainkai.model.dtos.AddressRequest addressRequest) {
         Optional<User> user = userRepo.findById(addressRequest.getUserId());
-
-        Address address = new Address();
-        address.setUser(user.get());
-        address.setFirstName(addressRequest.getFirstName());
-        address.setLastName(addressRequest.getLastName());
-        address.setStreetAddress(addressRequest.getStreetAddress());
-        address.setCity(addressRequest.getCity());
-        address.setState(addressRequest.getState());
-        address.setZipCode(addressRequest.getZipCode());
-        address.setMobile(addressRequest.getMobile());
+        //TODO:Remove the old package for AddressRequest
+          Address address = mapper.toAddressEntity(addressRequest);
+          address.setUser(user.get());
+//        address.setFirstName(addressRequest.getFirstName());
+//        address.setLastName(addressRequest.getLastName());
+//        address.setStreetAddress(addressRequest.getStreetAddress());
+//        address.setCity(addressRequest.getCity());
+//        address.setState(addressRequest.getState());
+//        address.setZipCode(addressRequest.getZipCode());
+//        address.setMobile(addressRequest.getMobile());
         if(addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(),address.getCity(),address.getState(),address.getZipCode(),address.getUser())){
-            return null;
+            throw new RuntimeException("ADDR ALREADY EXISTS");
         }
         else{
             return addressRepo.save(address);

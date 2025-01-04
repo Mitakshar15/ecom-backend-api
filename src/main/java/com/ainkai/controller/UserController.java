@@ -32,14 +32,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserResponseDTO> getUserProfileHandler(@RequestHeader("Authorization") String jwt)throws UserException{
-
-        System.out.println("INSIDE GET USER PROFILE HANDLER CONTROLLER ::");
-        User user = userService.findUserProfileByJwt(jwt);
-        return  new ResponseEntity<>(UserResponseDTO.fromEntity(user), HttpStatus.ACCEPTED);
-
-    }
+//    @GetMapping("/profile")
+//    public ResponseEntity<UserResponseDTO> getUserProfileHandler(@RequestHeader("Authorization") String jwt)throws UserException{
+//
+//        System.out.println("INSIDE GET USER PROFILE HANDLER CONTROLLER ::");
+//        User user = userService.findUserProfileByJwt(jwt);
+//        return  new ResponseEntity<>(UserResponseDTO.fromEntity(user), HttpStatus.ACCEPTED);
+//
+//    }
 
     @GetMapping("/")
     public ResponseEntity<List<User>> findAllUsersHandler(@RequestHeader("Authorization") String jwt) throws UserException{
@@ -49,39 +49,39 @@ public class UserController {
 
     }
 
-    @PutMapping("/editProfile")
-    public ResponseEntity<UserResponseDTO>updateUserDetailHandler(@RequestHeader("Authorization") String jwt, @RequestBody EditUserRequest userRequest) throws UserException {
+//    @PutMapping("/editProfile")
+//    public ResponseEntity<UserResponseDTO>updateUserDetailHandler(@RequestHeader("Authorization") String jwt, @RequestBody EditUserRequest userRequest) throws UserException {
+//
+//        User loggedUser = userService.findUserProfileByJwt(jwt);
+//        if(Objects.equals(loggedUser.getId(), userRequest.getUserId())){
+//            User updatedUser = userService.editUser(userRequest);
+//            return new ResponseEntity<UserResponseDTO>(UserResponseDTO.fromEntity(updatedUser),HttpStatus.OK);
+//        }
+//        else {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//    }
 
-        User loggedUser = userService.findUserProfileByJwt(jwt);
-        if(Objects.equals(loggedUser.getId(), userRequest.getUserId())){
-            User updatedUser = userService.editUser(userRequest);
-            return new ResponseEntity<UserResponseDTO>(UserResponseDTO.fromEntity(updatedUser),HttpStatus.OK);
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
-
-    }
-
-    @PostMapping("/address/edit")
-    public ResponseEntity<Address>addDeliveryAddress(@RequestHeader("Authorization") String jwt,@RequestBody AddressRequest request) throws UserException {
-
-       User user  = userService.findUserProfileByJwt(jwt);
-       if(Objects.equals(user.getId(), request.getUserId())){
-           Address newAddress = userService.addNewAddress(request);
-           if(newAddress!=null){
-               return new ResponseEntity<>(newAddress,HttpStatus.CREATED);
-           }
-           else {
-               return ResponseEntity.notFound().build();
-           }
-
-       }
-       else{
-           return ResponseEntity.notFound().build();
-       }
-
-    }
+//    @PostMapping("/address/edit")
+//    public ResponseEntity<Address>addDeliveryAddress(@RequestHeader("Authorization") String jwt,@RequestBody AddressRequest request) throws UserException {
+//
+//       User user  = userService.findUserProfileByJwt(jwt);
+//       if(Objects.equals(user.getId(), request.getUserId())){
+//           Address newAddress = userService.addNewAddress(request);
+//           if(newAddress!=null){
+//               return new ResponseEntity<>(newAddress,HttpStatus.CREATED);
+//           }
+//           else {
+//               return ResponseEntity.notFound().build();
+//           }
+//
+//       }
+//       else{
+//           return ResponseEntity.notFound().build();
+//       }
+//
+//    }
 
     @DeleteMapping("/address/delete/{addressId}")
     public ResponseEntity<ApiResponse> deleteDeliveryAddress(@RequestHeader("Authorization") String jwt,@PathVariable Long addressId) throws UserException {

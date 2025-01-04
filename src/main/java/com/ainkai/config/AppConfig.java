@@ -43,7 +43,9 @@ public class AppConfig {
                                         "http://localhost:3000",
                                         "http://localhost:4000",
                                         "http://localhost:4200",
-                                        "https://mitakshar-ecom.vercel.app/"
+                                        "https://mitakshar-ecom.vercel.app/",
+                                        "http://localhost:5454/swagger-ui/index.html#/",
+                                        "http://localhost:63343"
 
                                 )
                         );

@@ -79,7 +79,7 @@ public class CartItemServiceImpl implements CartItemService{
              cartItemRepo.deleteById(cartItemId);
          }
          else {
-             throw new UserException("CANNOT DELETE ANOTHER USERS CART");
+             throw new UserException("CART KEY","CANNOT DELETE ANOTHER USERS CART");
          }
 
 
