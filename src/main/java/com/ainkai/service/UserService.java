@@ -3,8 +3,8 @@ package com.ainkai.service;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
+import com.ainkai.model.dtos.AddressRequest;
 import com.ainkai.model.dtos.EditProfileRequest;
-import com.ainkai.request.AddressRequest;
 import com.ainkai.request.EditUserRequest;
 import com.ainkai.response.ApiResponse;
 
@@ -25,7 +25,7 @@ public interface UserService {
 
   public void deleteAddress(Long addressId);
 
-  public Address editAddress(AddressRequest addressRequest,Long addressId);
+  public Address editAddress(AddressRequest addressRequest, Long addressId);
 
   public List<Address> getAllUserAddresses(Long userId);
 }

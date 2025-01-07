@@ -1,11 +1,12 @@
 package com.ainkai.mapper;
 
 import com.ainkai.api.BaseApiResponse;
-import com.ainkai.model.Address;
-import com.ainkai.model.User;
+import com.ainkai.model.*;
 import com.ainkai.model.dtos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper (componentModel = "spring")
 public interface EcomApiUserMapper {
@@ -33,5 +34,17 @@ public interface EcomApiUserMapper {
  Address toAddressEntity(AddressRequest request);
 
  AddNewAddressResponse toAddNewAddressResponse(BaseApiResponse response);
+
+ DeleteAddressResponse toDeleteAddressResponse(BaseApiResponse response);
+
+ EditAddressResponse toEditAddressResponse(BaseApiResponse response);
+
+ GetAllAddressResponse toGetAllAddressResponse(BaseApiResponse response);
+
+ List<AddressDto> toAddressDtoList(List<Address> addressList);
+
+ CartResponse toCartResponse(BaseApiResponse response);
+
+ CartDto toCartDto(Cart cart);
 
 }

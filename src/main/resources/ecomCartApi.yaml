@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: Ecom-Api-Service - OpenAPI 3.0
+  description: |-
+    Ecom Api Service
+  version: 0.1.0
+  contact:
+    name: API Support
+    email: work.mitakshar@gmail.com
+servers:
+  - url: http://localhost:5454
+tags:
+  - name: ecomApi V1 - User Controller
+    description: User Endpoints version 1
+paths:
+
+  /v1/user/cart:
+    get:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: Sign-Up/Register
+      description: Sign up/Register New User
+      operationId: getUserCartHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Sign Up Success"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/CartResponse'
+        '422':
+          description: "Cart Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+  

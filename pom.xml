@@ -191,11 +191,41 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>generate-user-api</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/ecomUserApi.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.ainkai.api</apiPackage>
+							<modelPackage>com.ainkai.model.dtos</modelPackage>
+							<configOptions>
+								<additionalModelTypeAnnotations>
+									@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+								</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useSpringBoot3>true</useSpringBoot3>
+								<performBeanValidation>true</performBeanValidation>
+								<useBeanValidation>true</useBeanValidation>
+								<useTags>true</useTags>
+								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+							</configOptions>
+							<importMappings>
+								<importMapping>BaseApiResponse=com.ainkai.api.BaseApiResponse</importMapping>
+							</importMappings>
+							<typeMappings>
+								<typeMapping>BaseApiResponse=BaseApiResponse</typeMapping>
+							</typeMappings>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-cart-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/ecomCartApi.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<apiPackage>com.ainkai.api</apiPackage>
 							<modelPackage>com.ainkai.model.dtos</modelPackage>

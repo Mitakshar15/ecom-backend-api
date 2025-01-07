@@ -7,12 +7,14 @@ import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
 import com.ainkai.model.dtos.*;
+import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;
 import com.ainkai.response.ApiResponse;
 import com.ainkai.service.CartService;
 import com.ainkai.service.CustomUserServiceImpl;
 import com.ainkai.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +22,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -119,5 +123,47 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
         }
 
     }
+
+    public ResponseEntity<DeleteAddressResponse> deleteAddressHandler(@PathVariable("addressId") Long addressId,@RequestHeader("Authorization")String jwt)  {
+        User user = userService.findUserProfileByJwt(jwt);
+        if(user !=null){
+            userService.deleteAddress(addressId);
+            DeleteAddressResponse deleteAddressResponse = mapper.toDeleteAddressResponse(builder.buildSuccessApiResponse("Succesfully deleted address"));
+            return new ResponseEntity<>(deleteAddressResponse,HttpStatus.ACCEPTED);
+        }
+        else {
+            DeleteAddressResponse errorResponse = mapper.toDeleteAddressResponse(builder.buildErrorApiResponse("Session Expired,Please Login And try Again"));
+            return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    public ResponseEntity<EditAddressResponse> editAddressHandler(@PathVariable("addressId")Long addressId, @NotNull @RequestHeader("Authorization")String jwt, @Valid AddressRequest addressRequest)  {
+        User user = userService.findUserProfileByJwt(jwt);
+        if(Objects.equals(user.getId(),addressRequest.getUserId())){
+            userService.editAddress(addressRequest,addressId);
+            EditAddressResponse editAddressResponse = mapper.toEditAddressResponse(builder.buildSuccessApiResponse("Succesfully edited address"));
+            return new ResponseEntity<>(editAddressResponse,HttpStatus.ACCEPTED);
+        }
+        else {
+            EditAddressResponse editAddressErrorResponse = mapper.toEditAddressResponse(builder.buildErrorApiResponse("Session Expired, Please Login And try Again"));
+            return new ResponseEntity<>(editAddressErrorResponse,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<GetAllAddressResponse> getAllAddressHandler(@RequestHeader("Authorization")String jwt)  {
+        User user = userService.findUserProfileByJwt(jwt);
+        if(user !=null){
+            List<Address> addressList = userService.getAllUserAddresses(user.getId());
+            GetAllAddressResponse response = mapper.toGetAllAddressResponse(builder.buildSuccessApiResponse("Get All Addresses Success"));
+            response.data(mapper.toAddressDtoList(addressList));
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        else {
+            GetAllAddressResponse response = mapper.toGetAllAddressResponse(builder.buildErrorApiResponse("Session Expired,Please Login And try Again"));
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
