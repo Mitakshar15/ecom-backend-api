@@ -20,6 +20,7 @@ public interface CartItemService {
 
     public CartItem findCartItemById(Long cartItemId)throws CartItemException;
 
+
     public void removeAllItems(Long cartId)throws CartItemException,UserException;
 
 
