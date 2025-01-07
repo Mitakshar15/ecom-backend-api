@@ -1,6 +1,8 @@
-package com.ainkai.api;
+package com.ainkai.api.utils;
 
 
+import com.ainkai.api.ErrorType;
+import com.ainkai.api.MessageType;
 import lombok.Data;
 
 @Data

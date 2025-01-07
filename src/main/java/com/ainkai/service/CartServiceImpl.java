@@ -6,6 +6,7 @@ import com.ainkai.model.Cart;
 import com.ainkai.model.CartItem;
 import com.ainkai.model.Product;
 import com.ainkai.model.User;
+import com.ainkai.model.dtos.AddItemToCartRequest;
 import com.ainkai.repository.CartRepo;
 import com.ainkai.request.AddItemRequest;
 import org.springframework.stereotype.Service;
@@ -33,12 +34,11 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public String addCartitem(Long userId, AddItemRequest addItemRequest) throws ProductException {
+    public String addCartitem(Long userId, AddItemToCartRequest addItemRequest) throws ProductException {
         Cart cart = cartRepo.findByUserId(userId);
         Product product = productService.findProductById(addItemRequest.getProductId());
         addItemRequest.setPrice(product.getDiscountedPrice());
         CartItem isPresent = cartItemService.isCartItemExists(cart,product,addItemRequest.getSize(),userId);
-
         if(isPresent ==null){
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);

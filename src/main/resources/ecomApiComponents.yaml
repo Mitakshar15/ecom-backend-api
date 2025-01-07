@@ -74,7 +74,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
-    #************ Cart Api Responses ****************
+    #************ Cart & Product Api Responses ****************
     CartResponse:
       type: object
       properties:
@@ -84,8 +84,35 @@ components:
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
+    AddItemToCartResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    CartItemResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
 
+    MultipleProductResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    ProductResponse:
+      type: object
+      properties:
+        product:
+          type: object
+          $ref: '#/components/schemas/ProductDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
 
 
@@ -163,6 +190,23 @@ components:
           type: "string"
         mobile:
           type: "string"
+    #****** Cart & Product Api Requests *********
+    AddItemToCartRequest:
+      type: "object"
+      properties:
+        productId:
+          type: "integer"
+          format: "int64"
+        size:
+          type: "string"
+        quantity:
+          type: "integer"
+          format: "int32"
+        Price:
+          type: "integer"
+          format: "int32"
+
+
     #************ Ecom Api Dto's ****************
     AuthResponseDto:
       type: object
@@ -300,3 +344,38 @@ components:
         quantity:
           type: "integer"
           format: "int32"
+
+    ProductDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+        discountPercent:
+          type: "integer"
+          format: "int32"
+        quantity:
+          type: "integer"
+          format: "int32"
+        brand:
+          type: "string"
+        color:
+          type: "string"
+        sizes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SizeDto"
+        imageUrl:
+          type: "string"
+        category:
+          $ref: "#/components/schemas/ProductCategoryDto"

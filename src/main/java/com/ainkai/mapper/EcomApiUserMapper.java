@@ -47,4 +47,14 @@ public interface EcomApiUserMapper {
 
  CartDto toCartDto(Cart cart);
 
+ AddItemToCartResponse toAddItemToCartResponse(BaseApiResponse response);
+
+ MultipleProductResponse toMultipleProductResponse(BaseApiResponse response);
+
+ ProductDto toProductDto(Product product);
+
+ ProductResponse toProductResponse(BaseApiResponse response);
+
+ CartItemResponse toCartItemResponse(BaseApiResponse response);
+
 }

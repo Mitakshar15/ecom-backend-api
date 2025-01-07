@@ -2,6 +2,8 @@ package com.ainkai.api;
 
 
 import java.util.List;
+
+import com.ainkai.api.utils.ApiMessage;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
