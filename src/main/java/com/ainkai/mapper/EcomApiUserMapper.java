@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2025. Mitakshar.
+ * All rights reserved.
+ *
+ * This is an e-commerce project built for Learning Purpose and may not be reproduced, distributed, or used without explicit permission from Mitakshar.
+ *
+ *
+ */
+
 package com.ainkai.mapper;
 
 import com.ainkai.api.utils.BaseApiResponse;
@@ -58,4 +67,14 @@ public interface EcomApiUserMapper {
  CartItemResponse toCartItemResponse(BaseApiResponse response);
 
  EcomApiServiceBaseApiResponse toEcomApiServiceBaseApiResponse(BaseApiResponse response);
+
+ OrderDto toOrderDto(Order order);
+
+ OrderResponse toOrderResponse(BaseApiResponse response);
+
+ Address toAddressEntity(AddressDto addressDto);
+
+ List<OrderDto> toOrderDtoList(List<Order> orderList);
+
+ OrderHistoryResponse toOrderHistoryResponse(BaseApiResponse response);
 }

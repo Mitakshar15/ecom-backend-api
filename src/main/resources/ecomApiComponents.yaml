@@ -114,8 +114,25 @@ components:
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
+    #******** Orders And Reviews Responses *********
+    OrderResponse:
+      type: object
+      properties:
+        order:
+          type: object
+          $ref: '#/components/schemas/OrderDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
-
+    OrderHistoryResponse:
+      type: object
+      properties:
+        order-history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
     #************ Ecom Api Requests ****************
     SignUpRequest:
@@ -379,3 +396,63 @@ components:
           type: "string"
         category:
           $ref: "#/components/schemas/ProductCategoryDto"
+
+    OrderItemDTO:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        product:
+          $ref: "#/components/schemas/CartItemProductDto"
+        quantity:
+          type: "integer"
+          format: "int32"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+
+    OrderDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        order_id:
+          type: "string"
+        user_id:
+          type: "integer"
+          format: "int64"
+        orderItemList:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderItemDTO"
+        orderDate:
+          type: "string"
+          format: "local-date-time"
+        deliveryDate:
+          type: "string"
+          format: "local-date-time"
+        shippingAddress:
+          $ref: "#/components/schemas/AddressDto"
+        totalPrice:
+          type: "number"
+          format: "double"
+        totalDiscountedPrice:
+          type: "integer"
+          format: "int32"
+        discount:
+          type: "integer"
+          format: "int32"
+        OrderStatus:
+          type: "string"
+        totalItem:
+          type: "integer"
+          format: "int32"
+        createdAt:
+          type: "string"
+          format: "local-date-time"
+

@@ -33,7 +33,6 @@ public class ReviewController {
     public ResponseEntity<ReviewResponseDTO> createReviewHandler(@RequestBody ReviewRequest request, @RequestHeader("Authorization")String jwt, @RequestParam("rating")Double rating)throws UserException, ProductException{
         User user = userService.findUserProfileByJwt(jwt);
         Review review = reviewService.createReview(request,user,rating);
-
         return new ResponseEntity<ReviewResponseDTO>(ReviewResponseDTO.fromEntity(review), HttpStatus.ACCEPTED);
     }
 

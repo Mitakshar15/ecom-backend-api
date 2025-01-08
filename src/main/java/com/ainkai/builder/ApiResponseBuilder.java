@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2025. Mitakshar.
+ * All rights reserved.
+ *
+ * This is an e-commerce project built for Learning Purpose and may not be reproduced, distributed, or used without explicit permission from Mitakshar.
+ *
+ *
+ */
+
 package com.ainkai.builder;
 
 
@@ -7,9 +16,11 @@ import com.ainkai.api.utils.Status;
 import com.ainkai.config.JwtProvider;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Cart;
+import com.ainkai.model.Order;
 import com.ainkai.model.Product;
 import com.ainkai.model.dtos.AuthResponseDto;
 import com.ainkai.model.dtos.CartDto;
+import com.ainkai.model.dtos.OrderDto;
 import com.ainkai.model.dtos.ProductDto;
 import com.ainkai.user.domain.Constants;
 import io.micrometer.tracing.Tracer;
@@ -56,14 +67,17 @@ public class ApiResponseBuilder {
     }
 
     public CartDto buildCartDto(Cart cart){
-        CartDto cartDto = mapper.toCartDto(cart);
-        return cartDto;
+        return mapper.toCartDto(cart);
     }
 
     public List<ProductDto> buildProductDtoList(List<Product> products) {
         return products.stream()
                 .map(mapper::toProductDto)
                 .collect(Collectors.toList());
+    }
+
+    public OrderDto buildOrderDto(Order order) {
+        return mapper.toOrderDto(order);
     }
 
 

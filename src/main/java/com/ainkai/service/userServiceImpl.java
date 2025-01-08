@@ -66,7 +66,7 @@ public class userServiceImpl implements UserService{
           Address address = mapper.toAddressEntity(addressRequest);
           address.setUser(user.get());
         if(addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(),address.getCity(),address.getState(),address.getZipCode(),address.getUser())){
-            throw new RuntimeException("ADDR ALREADY EXISTS");
+            throw new RuntimeException("ADDRESS ALREADY EXISTS");
         }
         else{
             return addressRepo.save(address);

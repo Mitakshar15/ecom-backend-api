@@ -8,7 +8,6 @@ import com.ainkai.model.Product;
 import com.ainkai.model.User;
 import com.ainkai.model.dtos.AddItemToCartRequest;
 import com.ainkai.repository.CartRepo;
-import com.ainkai.request.AddItemRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class CartServiceImpl implements CartService{
         Product product = productService.findProductById(addItemRequest.getProductId());
         addItemRequest.setPrice(product.getDiscountedPrice());
         CartItem isPresent = cartItemService.isCartItemExists(cart,product,addItemRequest.getSize(),userId);
-        if(isPresent ==null){
+        if(isPresent == null){
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);
             cartItem.setCart(cart);
