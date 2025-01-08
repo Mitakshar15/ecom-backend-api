@@ -7,10 +7,11 @@ import com.ainkai.exceptions.ProductException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Cart;
 import com.ainkai.model.User;
-import com.ainkai.model.dtos.AddItemToCartRequest;
 import com.ainkai.model.dtos.AddItemToCartResponse;
 import com.ainkai.model.dtos.CartItemResponse;
 import com.ainkai.model.dtos.CartResponse;
+import com.ainkai.model.dtos.AddItemToCartRequest;
+import com.ainkai.model.dtos.EcomApiServiceBaseApiResponse;
 import com.ainkai.repository.CartRepo;
 import com.ainkai.repository.ProductRepo;
 import com.ainkai.service.CartItemService;
@@ -52,7 +53,7 @@ public class UserCartController implements EcomApiV1CartControllerApi {
                return new ResponseEntity<>(cartResponse, HttpStatus.OK);
            }
            else {
-               AddItemToCartResponse cartErrorResponse = mapper.toAddItemToCartResponse(builder.buildErrorApiResponse("ERROR, FAILED TO ADD ITEM TO CART"));
+               AddItemToCartResponse cartErrorResponse = mapper.toAddItemToCartResponse(builder.buildErrorApiResponse("ITEM ALREDY EXISTS IN CART"));
                return new ResponseEntity<>(cartErrorResponse, HttpStatus.BAD_REQUEST);
            }
     }
@@ -62,6 +63,20 @@ public class UserCartController implements EcomApiV1CartControllerApi {
            cartItemService.removeCartItem(user.getId(),cartItemId);
            CartItemResponse response = mapper.toCartItemResponse(builder.buildSuccessApiResponse("ITEM REMOVED"));
            return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<CartItemResponse> updateCartItemQuantityHandler(@PathVariable Long cartItemId ,@PathVariable("quantity")Integer quantity, @RequestHeader("Authorization")String jwt)throws ProductException, CartItemException {
+        User user = userService.findUserProfileByJwt(jwt);
+        cartItemService.updateCartItemQuantity(user.getId(),cartItemId,quantity);
+        CartItemResponse response = mapper.toCartItemResponse(builder.buildSuccessApiResponse("ITEM Quantity UPDATED"));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<EcomApiServiceBaseApiResponse> clearCartHandler(@RequestHeader("Authorization")String jwt) throws CartItemException {
+        User user = userService.findUserProfileByJwt(jwt);
+        cartItemService.removeAllItems(cartService.findUserCart(user.getId()).getId());
+        EcomApiServiceBaseApiResponse response = mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("CART REMOVED"));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

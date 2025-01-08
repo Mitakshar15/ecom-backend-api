@@ -225,7 +225,83 @@ paths:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/CartItemResponse"
         '422':
-          description: "Product Request is valid but the service was not able to process it ..."
+          description: "Cart item Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/item/{cartItemId}/{quantity}:
+    put:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "Update Cart Item Quantity"
+      operationId: "updateCartItemQuantityHandler"
+      parameters:
+        - name: "cartItemId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "quantity"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/CartItemResponse"
+        '422':
+          description: "Cart Item Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/clear:
+    delete:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "DELETE api/cart_items/removeAllItem/{cartId}"
+      operationId: "clearCartHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Cart Clear Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:

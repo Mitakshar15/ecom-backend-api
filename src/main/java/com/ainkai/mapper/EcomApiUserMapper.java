@@ -1,6 +1,6 @@
 package com.ainkai.mapper;
 
-import com.ainkai.api.BaseApiResponse;
+import com.ainkai.api.utils.BaseApiResponse;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.*;
 import org.mapstruct.Mapper;
@@ -57,4 +57,5 @@ public interface EcomApiUserMapper {
 
  CartItemResponse toCartItemResponse(BaseApiResponse response);
 
+ EcomApiServiceBaseApiResponse toEcomApiServiceBaseApiResponse(BaseApiResponse response);
 }

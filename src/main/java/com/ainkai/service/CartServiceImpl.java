@@ -9,21 +9,16 @@ import com.ainkai.model.User;
 import com.ainkai.model.dtos.AddItemToCartRequest;
 import com.ainkai.repository.CartRepo;
 import com.ainkai.request.AddItemRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
 
-    private CartRepo cartRepo;
-    private CartItemService cartItemService;
-   private ProductService productService;
-
-    public CartServiceImpl(CartRepo cartRepo,CartItemService cartItemService,ProductService productService) {
-        this.cartRepo = cartRepo;
-        this.cartItemService = cartItemService;
-        this.productService = productService;
-    }
-
+    private final CartRepo cartRepo;
+    private final CartItemService cartItemService;
+    private final ProductService productService;
 
     @Override
     public Cart createCart(User user) {
@@ -52,9 +47,11 @@ public class CartServiceImpl implements CartService{
 
             CartItem createdCartItem = cartItemService.createCartItem(cartItem);
             cart.getCartItems().add(createdCartItem);
-
+            return "ITEM ADDED SUCCESSFULLY";
         }
-        return "ITEM ADDED SUCCESFULLY";
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -63,13 +60,11 @@ public class CartServiceImpl implements CartService{
         int totalPrice = 0;
         int totalDiscountedPrice=0;
         int totalItem=0;
-
         for(CartItem cartItem : cart.getCartItems()){
             totalPrice = totalPrice+ cartItem.getPrice();
             totalDiscountedPrice = totalDiscountedPrice + cartItem.getDiscountedPrice();
             totalItem  = totalItem +  cartItem.getQuantity();
         }
-
         cart.setTotalPrice(totalPrice);
         cart.setTotalDiscountedPrice(totalDiscountedPrice);
         cart.setTotalItem(totalItem);

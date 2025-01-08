@@ -212,7 +212,7 @@
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
 							</configOptions>
 							<importMappings>
-								<importMapping>BaseApiResponse=com.ainkai.api.BaseApiResponse</importMapping>
+								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>
 							</importMappings>
 							<typeMappings>
 								<typeMapping>BaseApiResponse=BaseApiResponse</typeMapping>
@@ -241,7 +241,7 @@
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
 							</configOptions>
 							<importMappings>
-								<importMapping>BaseApiResponse=com.ainkai.api.BaseApiResponse</importMapping>
+								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>
 							</importMappings>
 							<typeMappings>
 								<typeMapping>BaseApiResponse=BaseApiResponse</typeMapping>

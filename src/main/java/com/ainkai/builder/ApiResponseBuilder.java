@@ -1,17 +1,15 @@
 package com.ainkai.builder;
 
 
-import com.ainkai.api.BaseApiResponse;
-import com.ainkai.api.Metadata;
-import com.ainkai.api.Status;
+import com.ainkai.api.utils.BaseApiResponse;
+import com.ainkai.api.utils.Metadata;
+import com.ainkai.api.utils.Status;
 import com.ainkai.config.JwtProvider;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Cart;
-import com.ainkai.model.CartItem;
 import com.ainkai.model.Product;
 import com.ainkai.model.dtos.AuthResponseDto;
 import com.ainkai.model.dtos.CartDto;
-import com.ainkai.model.dtos.CartItemDto;
 import com.ainkai.model.dtos.ProductDto;
 import com.ainkai.user.domain.Constants;
 import io.micrometer.tracing.Tracer;
@@ -21,10 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
