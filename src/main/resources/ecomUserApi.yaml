@@ -1,0 +1,359 @@
+openapi: 3.0.3
+info:
+  title: Ecom-Api-Service - OpenAPI 3.0
+  description: |-
+    Ecom Api Service
+  version: 0.1.0
+  contact:
+    name: API Support
+    email: work.mitakshar@gmail.com
+servers:
+  - url: http://localhost:5454
+tags:
+  - name: ecomApi V1 - User Controller
+    description: User Endpoints version 1
+paths:
+  #**************************************Profile******************************************************
+  /v1/auth/signup:
+    post:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: Sign-Up/Register
+      description: Sign up/Register New User
+      operationId: signUp
+      requestBody:
+        description: Sign Up Request
+        content:
+          application/json:
+            schema:
+              $ref: './ecomApiComponents.yaml#/components/schemas/SignUpRequest'
+        required: true
+      responses:
+        '201':
+          description: "Sign Up Success"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/SignUpResponse'
+        '422':
+          description: "Signup Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/auth/signin:
+    post:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: Sign-In
+      description: Sign-In
+      operationId: signIn
+      requestBody:
+        description: Sign In Request
+        content:
+          application/json:
+            schema:
+              $ref: './ecomApiComponents.yaml#/components/schemas/SignInRequest'
+        required: true
+      responses:
+        '200':
+          description: "Sign In Success"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/SignInResponse'
+        '422':
+          description: "Signup Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+  /v1/user/profile:
+    get:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "Get User Profile"
+      operationId: getUserProfileHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/GetProfileResponse"
+        "400":
+          description: "Bad Request - Invalid or missing Authorization header"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "404":
+          description: "Not Found - User not found for the provided token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+
+  /v1/user/editProfile:
+    put:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "Edit Profile"
+      operationId: updateProfileHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/EditProfileRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EditProfileResponse"
+
+        "400":
+          description: "Bad Request - Invalid input"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "409":
+          description: "Conflict - UserException occurred, e.g., duplicate user data or constraint violation"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+
+  /v1/user/address/add:
+    post:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "Add New Address"
+      operationId: addAddressHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/AddressRequest"
+        required: true
+      responses:
+        "201":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/AddNewAddressResponse"
+        "400":
+          description: "Bad Request - Invalid input"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "409":
+          description: "Conflict - UserException occurred, e.g., duplicate user data or constraint violation"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+
+  /v1/user/address/delete/{addressId}:
+    delete:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "DELETE Address"
+      operationId: deleteAddressHandler
+      parameters:
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: long
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "202":
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/DeleteAddressResponse"
+
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "409":
+          description: "Conflict - UserException occurred, e.g., duplicate user data or constraint violation"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+
+  /v1/user/address/edit/{addressId}:
+    put:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "Edit Address By Id"
+      operationId: "editAddressHandler"
+      parameters:
+        - in: "path"
+          name: "addressId"
+          required: true
+          schema:
+            type: long
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './ecomApiComponents.yaml#/components/schemas/AddressRequest'
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EditAddressResponse'
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "409":
+          description: "Conflict - UserException occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+
+  /v1/user/address:
+    get:
+      tags:
+        - ecomApi V1 User-Controller
+      summary: "GET ALL ADDRESS"
+      operationId: getAllAddressHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/GetAllAddressResponse"
+
+        "401":
+          description: "Unauthorized - Invalid or expired token"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "409":
+          description: "Conflict - UserException occurred, e.g., duplicate user data or constraint violation"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        "500":
+          description: "Internal Server Error - Unexpected error occurred"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"

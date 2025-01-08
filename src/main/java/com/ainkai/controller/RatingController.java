@@ -21,11 +21,11 @@ import java.util.List;
 @RequestMapping("/api/product/ratings")
 public class RatingController {
 
-    @Autowired
+
     private RatingService ratingService;
-    @Autowired
+
     private ProductService productService;
-    @Autowired
+
     private UserService userService;
 
     public RatingController(ProductService productService, RatingService ratingService, UserService userService) {
