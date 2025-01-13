@@ -1,0 +1,457 @@
+openapi: 3.0.3
+info:
+  title: Ecom-Api-Service - OpenAPI 3.0
+  description: |-
+    Ecom Api Service
+  version: 0.1.0
+  contact:
+    name: API Support
+    email: work.mitakshar@gmail.com
+servers:
+  - url: http://localhost:5454
+paths:
+
+  /v1/user/cart:
+    get:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: Sign-Up/Register
+      description: Sign up/Register New User
+      operationId: getUserCartHandler
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Sign Up Success"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/CartResponse'
+        '422':
+          description: "Cart Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/add:
+    put:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "Add Item To Cart"
+      operationId: "addItemToCartHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/AddItemToCartRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/AddItemToCartResponse"
+        '422':
+          description: "Add To Cart Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/products:
+    get:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Get Filtered Products"
+      operationId: "findProductByCategoryHandler"
+      parameters:
+        - name: "category"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "color"
+          in: "query"
+          required: true
+          schema:
+            type: "array"
+            items:
+              type: "string"
+        - name: "size"
+          in: "query"
+          required: true
+          schema:
+            type: "array"
+            items:
+              type: "string"
+        - name: "minPrice"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "maxPrice"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "minDiscount"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "sort"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "stock"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "pageNumber"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "pageSize"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/MultipleProductResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/products/{productId}:
+    get:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Get Product By Id"
+      operationId: "getProductByIdHandler"
+      parameters:
+        - name: "productId"
+          in: path
+          required: true
+          schema:
+            type: long
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/ProductResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/item/remove/{cartItemId}:
+    delete:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "Remove Cart item"
+      operationId: "removeCartItemHandler"
+      parameters:
+        - name: "cartItemId"
+          in: path
+          required: true
+          schema:
+            type: long
+        - name: "Authorization"
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/CartItemResponse"
+        '422':
+          description: "Cart item Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/item/{cartItemId}/{quantity}:
+    put:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "Update Cart Item Quantity"
+      operationId: "updateCartItemQuantityHandler"
+      parameters:
+        - name: "cartItemId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "quantity"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/CartItemResponse"
+        '422':
+          description: "Cart Item Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/cart/clear:
+    delete:
+      tags:
+        - ecomApi V1 Cart-Controller
+      summary: "DELETE api/cart_items/removeAllItem/{cartId}"
+      operationId: "clearCartHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Cart Clear Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/product/ratings/{productId}:
+    get:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Get Product Ratings"
+      operationId: "getProductRatingHandler"
+      parameters:
+        - name: "productId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/RatingResponse"
+        '422':
+          description: "Rating Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/product/ratings/create:
+    post:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Create Rating for Product"
+      operationId: "createRatingHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/RatingRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Rating Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/product/reviews/create:
+    post:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Add Product Review"
+      operationId: "createReviewHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/ReviewRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Review Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/product/reviews/{productId}:
+    get:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "GET All Product-Reviews"
+      operationId: "getAllReviewsHandler"
+      parameters:
+        - name: "productId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/GetAllReviewResponse"
+        '422':
+          description: "Review Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+

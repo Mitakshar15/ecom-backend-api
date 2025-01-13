@@ -34,7 +34,6 @@ public class RatingResponseDTO {
         RatingResponseDTO dto = new RatingResponseDTO();
         dto.setRating(rating.getRating());
         dto.setUser(BasicUserInfoDTO.fromEntity(rating.getUser()));
-        dto.setCreatedAt(rating.getCreatedAt());
         return dto;
     }
 

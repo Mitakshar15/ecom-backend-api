@@ -1,13 +1,25 @@
+/*
+ * Copyright (c) 2025. Mitakshar.
+ * All rights reserved.
+ *
+ * This is an e-commerce project built for Learning Purpose and may not be reproduced, distributed, or used without explicit permission from Mitakshar.
+ *
+ *
+ */
+
 package com.ainkai.service;
 
 import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
+import com.ainkai.model.dtos.AddressDto;
 import com.ainkai.repository.*;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
 import jakarta.mail.MessagingException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +29,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartService cartService;
+    private CartItemService cartItemService;
     @Autowired
     private AddressRepo addressRepo;
     @Autowired
@@ -37,64 +51,47 @@ public class OrderServiceImpl implements OrderService {
     private OrderConfirmationEmail orderConfirmationEmailsender;
     @Autowired
     private  ProductService productService;
-
-    public OrderServiceImpl(AddressRepo addressRepo, CartService cartService, OrderItemRepo orderItemRepo, OrderItemService orderItemService, OrderRepo orderRepo, UserRepo userRepo,OrderConfirmationEmail orderConfirmationEmailsender,UserService userService,ProductService productService) {
-        this.addressRepo = addressRepo;
-        this.cartService = cartService;
-        this.orderItemRepo = orderItemRepo;
-        this.orderItemService = orderItemService;
-        this.orderRepo = orderRepo;
-        this.userRepo = userRepo;
-        this.orderConfirmationEmailsender = orderConfirmationEmailsender;
-        this.userService = userService;
-        this.productService = productService;
-    }
+    private EcomApiUserMapper mapper;
 
     @Override
-    public Order createOrder(User user, Address shippingAddress)throws ProductException {
+    public Order createOrder(User user, AddressDto request)throws ProductException {
         //Set The User for Shiping address
+        Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
         //after saving the user, save to the database
-
         //Add Checks for Alredy existing Address
-        Address finalAddress = new Address();
 
-        if(isShippingAddressExists(user.getId(),shippingAddress)){
-
+       Address finalAddress = new Address();
+       if(isShippingAddressExists(user.getId(),shippingAddress)){
            Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
            if(opt.isPresent()){
                finalAddress = opt.get();
            }
-
         }
-        else{
-
-            Address address = addressRepo.save(shippingAddress);
-            finalAddress = address;
-            //add the saved address to the user Addresses List
-            user.getAddresses().add(address);
-            //save the User
-            userRepo.save(user);
-        }
-
-
+//        else{
+//            Address address = addressRepo.save(shippingAddress);
+//           finalAddress = address;
+//            //add the saved address to the user Addresses List
+//            user.getAddresses().add(address);
+//            //save the User
+//            userRepo.save(user);
+//       }
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
-
         //now create a List of Order items and fetch each order Item One by One
         List<OrderItem> orderItems = new ArrayList<>();
-
+        if(cart.getCartItems().isEmpty()){
+            throw new OrderException("There are no cart items in this cart");
+        }
         //Loop through Each cart item, and add the cart item to respective orderitem
         for(CartItem item :cart.getCartItems() ){
             OrderItem orderItem = new OrderItem();
-
             orderItem.setPrice(item.getPrice());
             orderItem.setProduct(item.getProduct());
             orderItem.setDiscountedPrice(item.getDiscountedPrice());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSize(item.getSize());
             orderItem.setUserId(item.getUserId());
-            orderItem.setDeliveryDate(LocalDateTime.now().plusDays(4));
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
             Product product = orderItem.getProduct();
@@ -103,7 +100,6 @@ public class OrderServiceImpl implements OrderService {
             }
             productService.updateProduct(product.getId(),product);
         }
-
         Order createdOrder = new Order();
         createdOrder.setUser(user);
         createdOrder.setOrderItemList(orderItems);
@@ -117,17 +113,16 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setOrderStatus(OrderStatus.PENDING);
         createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
         createdOrder.setCreatedAt(LocalDateTime.now());
-
+        createdOrder.setDeliveryDate(LocalDateTime.now());
         Order saveOrder = orderRepo.save(createdOrder);
-
         //Update the order items to set the order or (set the ORDER for orderItems)
         for(OrderItem item : orderItems){
             item.setOrder(saveOrder);
             orderItemRepo.save(item);
         }
-
+        //Clear the cart Before creating the order
+        cartItemService.removeAllItems(cart.getId());
         return saveOrder;
-
     }
 
     @Override
@@ -210,8 +205,5 @@ public class OrderServiceImpl implements OrderService {
         else{
             return false;
         }
-
-
-
     }
 }

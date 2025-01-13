@@ -115,8 +115,7 @@ public class ProductServiceImpl implements ProductService {
         if(opt.isPresent()){
             return  opt.get();
         }
-        throw new ProductException("PRODUCT NOT FOUND WITH ID"+productId);
-
+        throw new ProductException("PRODUCT EXCEPTION ","PRODUCT NOT FOUND WITH ID " + productId);
 
     }
 
@@ -124,17 +123,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findProductByCategry(String category) {
         return List.of();
     }
-
     @Override
-    public Page<Product> getAllProduct(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
-
-
-
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-
-
+    public List<Product> getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
+        // Todo: Removed the Pagination Since OpenApi Does Not Support Page<>
         List<Product> productList  = productRepo.filterProducts(category,minPrice,maxPrice,minDiscount,sort);
-
         if(!colors.isEmpty()){
             productList = productList.stream().filter(p->colors.stream().anyMatch(c->c.equalsIgnoreCase(p.getColor()))).collect(Collectors.toList());
         }
@@ -146,16 +138,12 @@ public class ProductServiceImpl implements ProductService {
                 productList = productList.stream().filter(p->p.getQuantity()<1).collect(Collectors.toList());
             }
         }
-
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(),productList.size());
-
-        List<Product> pageContent = productList.subList(startIndex,endIndex);
-
-
-        Page<Product> filteredProducts = new PageImpl<>(pageContent,pageable,productList.size());
-
-        return filteredProducts;
+        int startIndex = (pageNumber-1)*pageSize;
+        if(startIndex<0){
+            startIndex = 0;
+        }
+        int endIndex = Math.min(startIndex+pageSize,productList.size());
+        return productList.subList(startIndex,endIndex);
     }
 
     @Override
