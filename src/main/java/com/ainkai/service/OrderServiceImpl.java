@@ -60,21 +60,22 @@ public class OrderServiceImpl implements OrderService {
         shippingAddress.setUser(user);
         //after saving the user, save to the database
         //Add Checks for Alredy existing Address
-        Address finalAddress = new Address();
-        if(isShippingAddressExists(user.getId(),shippingAddress)){
+
+       Address finalAddress = new Address();
+       if(isShippingAddressExists(user.getId(),shippingAddress)){
            Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
            if(opt.isPresent()){
                finalAddress = opt.get();
            }
         }
-        else{
-            Address address = addressRepo.save(shippingAddress);
-            finalAddress = address;
-            //add the saved address to the user Addresses List
-            user.getAddresses().add(address);
-            //save the User
-            userRepo.save(user);
-        }
+//        else{
+//            Address address = addressRepo.save(shippingAddress);
+//           finalAddress = address;
+//            //add the saved address to the user Addresses List
+//            user.getAddresses().add(address);
+//            //save the User
+//            userRepo.save(user);
+//       }
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
         //now create a List of Order items and fetch each order Item One by One

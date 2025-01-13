@@ -77,4 +77,14 @@ public interface EcomApiUserMapper {
  List<OrderDto> toOrderDtoList(List<Order> orderList);
 
  OrderHistoryResponse toOrderHistoryResponse(BaseApiResponse response);
+
+ RatingDto toRatingDto(Rating rating);
+
+ RatingResponse toRatingResponse(BaseApiResponse response);
+
+ GetAllReviewResponse toGetAllReviewResponse(BaseApiResponse response);
+
+ @Mapping(ignore = true,target = "rating")
+ ReviewDto toReviewDto(Review review);
+
 }

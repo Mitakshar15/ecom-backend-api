@@ -62,7 +62,7 @@ components:
     EditAddressResponse:
       type: object
       allOf:
-       - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
     GetAllAddressResponse:
       type: object
@@ -70,7 +70,7 @@ components:
         data:
           type: array
           items:
-           $ref: '#/components/schemas/AddressDto'
+            $ref: '#/components/schemas/AddressDto'
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
@@ -111,6 +111,26 @@ components:
         product:
           type: object
           $ref: '#/components/schemas/ProductDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    RatingResponse:
+      type: object
+      properties:
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RatingDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    GetAllReviewResponse:
+      type: object
+      properties:
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewDto'
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
@@ -455,4 +475,45 @@ components:
         createdAt:
           type: "string"
           format: "local-date-time"
+
+    RatingDto:
+      type: "object"
+      properties:
+        rating:
+          type: "number"
+          format: "double"
+
+    ReviewDto:
+      type: "object"
+      properties:
+        id:
+          type: "long"
+        review:
+          type: "string"
+        userName:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "local-date-time"
+        rating:
+          type: "double"
+
+
+    RatingRequest:
+      type: object
+      properties:
+        rating:
+          type: double
+        productId:
+          type: long
+
+    ReviewRequest:
+      type: object
+      properties:
+        productId:
+          type: long
+        rating:
+          type: double
+        review:
+          type: string
 

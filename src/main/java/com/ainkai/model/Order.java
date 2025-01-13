@@ -33,7 +33,7 @@ public class Order {
 
     private LocalDateTime deliveryDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Address shippingAddress;
 
     @Embedded
