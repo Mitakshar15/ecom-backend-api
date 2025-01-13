@@ -4,8 +4,8 @@ import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Product;
 import com.ainkai.model.Rating;
 import com.ainkai.model.User;
+import com.ainkai.model.dtos.RatingRequest;
 import com.ainkai.repository.RatingRepo;
-import com.ainkai.request.RatingRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

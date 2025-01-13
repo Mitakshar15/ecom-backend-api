@@ -117,7 +117,6 @@ public class ProductServiceImpl implements ProductService {
         }
         throw new ProductException("PRODUCT EXCEPTION ","PRODUCT NOT FOUND WITH ID " + productId);
 
-
     }
 
     @Override
@@ -140,6 +139,9 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         int startIndex = (pageNumber-1)*pageSize;
+        if(startIndex<0){
+            startIndex = 0;
+        }
         int endIndex = Math.min(startIndex+pageSize,productList.size());
         return productList.subList(startIndex,endIndex);
     }

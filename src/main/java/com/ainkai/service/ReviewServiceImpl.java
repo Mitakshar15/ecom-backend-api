@@ -6,10 +6,10 @@ import com.ainkai.model.Product;
 import com.ainkai.model.Rating;
 import com.ainkai.model.Review;
 import com.ainkai.model.User;
+import com.ainkai.model.dtos.ReviewRequest;
 import com.ainkai.repository.ProductRepo;
 import com.ainkai.repository.ReviewRepo;
 import com.ainkai.request.RatingRequest;
-import com.ainkai.request.ReviewRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,11 +30,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review createReview(ReviewRequest request, User user,Double rating) throws ProductException {
+    public Review createReview(ReviewRequest request, User user) throws ProductException {
         Product product = productService.findProductById(request.getProductId());
-        RatingRequest ratingRequest = new RatingRequest();
+        com.ainkai.model.dtos.RatingRequest ratingRequest = new com.ainkai.model.dtos.RatingRequest();
         ratingRequest.setProductId(product.getId());
-        ratingRequest.setRating(rating);
+        ratingRequest.setRating(request.getRating());
         Rating savedRating =  ratingService.createRating(ratingRequest,user);
         Review review = new Review();
         review.setUser(user);

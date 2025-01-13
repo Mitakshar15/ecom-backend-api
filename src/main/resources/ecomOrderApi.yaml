@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: Ecom-Api-Service - OpenAPI 3.0
+  description: |-
+    Ecom Api Service
+  version: 0.1.0
+  contact:
+    name: API Support
+    email: work.mitakshar@gmail.com
+servers:
+  - url: http://localhost:5454
+paths:
+
+  /v1/user/order/create:
+    post:
+      tags:
+        - ecomApi V1 Order-Controller
+      summary: "POST api/orders"
+      operationId: "createOrderHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/AddressDto"
+        required: true
+      responses:
+        "201":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/OrderResponse"
+        '422':
+          description: "Order Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/order/allOrders:
+    get:
+      tags:
+        - ecomApi V1 Order-Controller
+      summary: "Get User Order History"
+      operationId: "getUserOrderHistoryHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/OrderHistoryResponse"
+        '422':
+          description: "Order History Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/user/order/{orderId}:
+    get:
+      tags:
+        - ecomApi V1 Order-Controller
+      summary: "Get Order By Id"
+      operationId: "getOrderByIdHandler"
+      parameters:
+        - name: "orderId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/OrderResponse"
+        '422':
+          description: "Order  Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'

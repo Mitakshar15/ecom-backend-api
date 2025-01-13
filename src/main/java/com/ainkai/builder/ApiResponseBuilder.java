@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2025. Mitakshar.
+ * All rights reserved.
+ *
+ * This is an e-commerce project built for Learning Purpose and may not be reproduced, distributed, or used without explicit permission from Mitakshar.
+ *
+ *
+ */
+
 package com.ainkai.builder;
 
 
@@ -6,11 +15,8 @@ import com.ainkai.api.utils.Metadata;
 import com.ainkai.api.utils.Status;
 import com.ainkai.config.JwtProvider;
 import com.ainkai.mapper.EcomApiUserMapper;
-import com.ainkai.model.Cart;
-import com.ainkai.model.Product;
-import com.ainkai.model.dtos.AuthResponseDto;
-import com.ainkai.model.dtos.CartDto;
-import com.ainkai.model.dtos.ProductDto;
+import com.ainkai.model.*;
+import com.ainkai.model.dtos.*;
 import com.ainkai.user.domain.Constants;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,8 +63,7 @@ public class ApiResponseBuilder {
     }
 
     public CartDto buildCartDto(Cart cart){
-        CartDto cartDto = mapper.toCartDto(cart);
-        return cartDto;
+        return mapper.toCartDto(cart);
     }
 
     public List<ProductDto> buildProductDtoList(List<Product> products) {
@@ -66,7 +72,22 @@ public class ApiResponseBuilder {
                 .collect(Collectors.toList());
     }
 
+    public OrderDto buildOrderDto(Order order) {
+        return mapper.toOrderDto(order);
+    }
 
+    public List<RatingDto> buildRatingDtoList(List<Rating> ratings) {
+        return ratings.stream().map(mapper::toRatingDto).collect(Collectors.toList());
+    }
 
-
+    public List<ReviewDto> buildReviewDtoList(List<Review> reviews) {
+        List<ReviewDto> reviewDto = new ArrayList<>();
+        for(Review review : reviews) {
+            ReviewDto dto = mapper.toReviewDto(review);
+            dto.setUserName(review.getUser().getFirstName()+" "+review.getUser().getLastName());
+            dto.setRating(review.getRating().getRating());
+            reviewDto.add(dto);
+        }
+        return reviewDto;
+    }
 }

@@ -8,6 +8,7 @@ class EcomapiApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
