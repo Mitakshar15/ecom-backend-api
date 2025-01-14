@@ -70,8 +70,7 @@ public class AdminOrderController {
     @PutMapping("/{orderId}/placed")
     public  ResponseEntity<OrderResponseDTO> placeOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt)throws OrderException, MessagingException, UserException {
         Order order = orderService.placedOrder(orderId);
-//        String email =userService.findUserProfileByJwt(jwt).getEmail();
-//        orderConfirmationEmailsender.sendEmail(email,"ORDER PLACED","THANK YOU "+ userService.findUserProfileByJwt(jwt).getFirstName() +" YOUR ORDDER HAS BEEN PLACED " + " ORDER ID : "+order.getOrderId()+" SHIPPING ADDRESS : "+order.getShippingAddress().getStreetAddress()+ " "+order.getShippingAddress().getCity()+" "+order.getShippingAddress().getZipCode());
+
         return new ResponseEntity<>(OrderResponseDTO.fromEntity(order),HttpStatus.ACCEPTED);
     }
 

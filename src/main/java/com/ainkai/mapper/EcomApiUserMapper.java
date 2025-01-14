@@ -12,6 +12,7 @@ package com.ainkai.mapper;
 import com.ainkai.api.utils.BaseApiResponse;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.*;
+import jakarta.persistence.Basic;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -86,5 +87,9 @@ public interface EcomApiUserMapper {
 
  @Mapping(ignore = true,target = "rating")
  ReviewDto toReviewDto(Review review);
+
+ BasicOrderResponse toBasicOrderResponse(BaseApiResponse response);
+
+
 
 }

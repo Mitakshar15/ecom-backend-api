@@ -20,7 +20,7 @@ public interface OrderService  {
 
     public List<Order> usersOrderHistory(Long userId);
 
-    public Order placedOrder(Long orderId) throws OrderException, MessagingException;
+    public Order placedOrder(Long orderId) throws OrderException;
 
     public Order confirmedOrder(Long orderId)throws OrderException;
 
