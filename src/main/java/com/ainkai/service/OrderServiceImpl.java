@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepo.save(item);
         }
         //Clear the cart Before creating the order
-        cartItemService.removeAllItems(cart.getId());
+       // cartItemService.removeAllItems(cart.getId());
         return saveOrder;
     }
 
@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order placedOrder(Long orderId) throws OrderException, MessagingException {
+    public Order placedOrder(Long orderId) throws OrderException {
 
         Order order = findOrderById(orderId);
         order.setOrderStatus(OrderStatus.PLACED);
