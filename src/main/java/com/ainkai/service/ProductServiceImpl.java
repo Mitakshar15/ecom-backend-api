@@ -1,11 +1,15 @@
 package com.ainkai.service;
 
+import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Category;
 import com.ainkai.model.Product;
+import com.ainkai.model.dtos.MultipleProductResponse;
+import com.ainkai.model.dtos.ProductResponse;
 import com.ainkai.repository.CategoryRepo;
 import com.ainkai.repository.ProductRepo;
 import com.ainkai.request.CreateProductRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,19 +23,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
 
     private ProductRepo productRepo;
     private UserService userService;
     private CategoryRepo categoryRepo;
+    private final ApiResponseBuilder builder;
 
-    @Autowired
-    public ProductServiceImpl(ProductRepo productRepo,CategoryRepo categoryRepo,UserService userService) {
-        this.productRepo=productRepo;
-        this.userService=userService;
-        this.categoryRepo=categoryRepo;
-    }
+//    @Autowired
+//    public ProductServiceImpl(ProductRepo productRepo,CategoryRepo categoryRepo,UserService userService) {
+//        this.productRepo=productRepo;
+//        this.userService=userService;
+//        this.categoryRepo=categoryRepo;
+//    }
 
     @Override
     public Product createProduct(CreateProductRequest request)throws ProductException {
@@ -123,9 +129,12 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findProductByCategry(String category) {
         return List.of();
     }
+
+
     @Override
-    public List<Product> getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
+    public MultipleProductResponse getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
         // Todo: Removed the Pagination Since OpenApi Does Not Support Page<>
+        MultipleProductResponse productResponse = new MultipleProductResponse();
         List<Product> productList  = productRepo.filterProducts(category,minPrice,maxPrice,minDiscount,sort);
         if(!colors.isEmpty()){
             productList = productList.stream().filter(p->colors.stream().anyMatch(c->c.equalsIgnoreCase(p.getColor()))).collect(Collectors.toList());
@@ -143,7 +152,10 @@ public class ProductServiceImpl implements ProductService {
             startIndex = 0;
         }
         int endIndex = Math.min(startIndex+pageSize,productList.size());
-        return productList.subList(startIndex,endIndex);
+        productResponse.setProducts(builder.buildProductDtoList(productList.subList(startIndex,endIndex)));
+        productResponse.setCurrentPage(pageNumber);
+        productResponse.setTotalItems(productList.size());
+        return productResponse;
     }
 
     @Override

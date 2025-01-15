@@ -102,6 +102,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductDto'
+        totalItems:
+          type: integer
+        currentPage:
+          type: integer
+
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
@@ -144,10 +149,15 @@ components:
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
+    BasicOrderResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
     OrderHistoryResponse:
       type: object
       properties:
-        order-history:
+        order_history:
           type: array
           items:
             $ref: '#/components/schemas/OrderDto'
@@ -467,7 +477,7 @@ components:
         discount:
           type: "integer"
           format: "int32"
-        OrderStatus:
+        orderStatus:
           type: "string"
         totalItem:
           type: "integer"
