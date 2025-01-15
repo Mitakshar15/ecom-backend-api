@@ -2,8 +2,9 @@ package com.ainkai.service;
 
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Product;
+import com.ainkai.model.dtos.CreateProductRequest;
 import com.ainkai.model.dtos.MultipleProductResponse;
-import com.ainkai.request.CreateProductRequest;
+import com.ainkai.model.dtos.UpdateProductRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface ProductService {
 
  public  String deleteProduct(Long productId) throws ProductException;
 
- public Product updateProduct(Long productId, Product request) throws ProductException;
+ public Product updateProduct(UpdateProductRequest request) throws ProductException;
 
  public  Product findProductById(Long productId)throws  ProductException;
 

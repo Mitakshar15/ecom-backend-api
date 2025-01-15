@@ -48,6 +48,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
+    AllUserResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+
     #************ Address Api Responses ****************
     AddNewAddressResponse:
       type: object
@@ -253,6 +264,15 @@ components:
           type: "integer"
           format: "int32"
 
+    AllProductResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDto"
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 
     #************ Ecom Api Dto's ****************
     AuthResponseDto:
@@ -382,6 +402,51 @@ components:
         level:
           type: "integer"
           format: "int32"
+
+    CreateProductRequest:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+        discountPercent:
+          type: "integer"
+          format: "int32"
+        quantity:
+          type: "integer"
+          format: "int32"
+        brand:
+          type: "string"
+        color:
+          type: "string"
+        size:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SizeDto"
+          uniqueItems: true
+        imageUrl:
+          type: "string"
+        topLevelCategory:
+          type: "string"
+        secondLevelCategory:
+          type: "string"
+        thirdLevelCategory:
+          type: "string"
+
+    updateProductRequest:
+      type: object
+      properties:
+        productId:
+          type: long
+        quantity:
+          type: integer
 
     SizeDto:
       type: "object"

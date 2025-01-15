@@ -15,6 +15,7 @@ import com.ainkai.exceptions.ProductException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddressDto;
+import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.*;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
@@ -98,7 +99,10 @@ public class OrderServiceImpl implements OrderService {
             if(product.getQuantity()>orderItem.getQuantity()){
                 product.setQuantity(product.getQuantity()-orderItem.getQuantity());
             }
-            productService.updateProduct(product.getId(),product);
+            UpdateProductRequest request1 = new UpdateProductRequest();
+            request1.productId(product.getId());
+            request1.quantity(product.getQuantity());
+            productService.updateProduct(request1);
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);
