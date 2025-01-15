@@ -102,6 +102,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductDto'
+        totalItems:
+          type: integer
+        currentPage:
+          type: integer
+
       allOf:
         - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
 

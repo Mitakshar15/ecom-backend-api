@@ -34,8 +34,9 @@ public class UserProductController implements EcomApiV1ProductControllerApi {
 
 
     public ResponseEntity<MultipleProductResponse> findProductByCategoryHandler(@RequestParam String category, @RequestParam List<String> color, @RequestParam List<String> size, @RequestParam Integer minPrice, @RequestParam Integer maxPrice, @RequestParam Integer minDiscount, @RequestParam String sort, @RequestParam String stock, @RequestParam Integer pageNumber, @RequestParam Integer pageSize){
-        MultipleProductResponse response = mapper.toMultipleProductResponse(builder.buildSuccessApiResponse("FIND FILTERED PRODUCTS SUCCESS"));
-        response.products(builder.buildProductDtoList(productService.getAllFilteredProducts(category,color,size,minPrice,maxPrice,minDiscount,sort,stock,pageNumber,pageSize)));
+        MultipleProductResponse response = productService.getAllFilteredProducts(category,color,size,minPrice,maxPrice,minDiscount,sort,stock,pageNumber,pageSize);
+//      response = mapper.toMultipleProductResponse(builder.buildSuccessApiResponse("FIND FILTERED PRODUCTS SUCCESS"));
+        builder.buildMultipleProductResponse(response,"FIND FILTERED PRODUCTS SUCCES");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

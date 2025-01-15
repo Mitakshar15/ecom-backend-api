@@ -2,6 +2,7 @@ package com.ainkai.service;
 
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.Product;
+import com.ainkai.model.dtos.MultipleProductResponse;
 import com.ainkai.request.CreateProductRequest;
 import org.springframework.data.domain.Page;
 
@@ -20,7 +21,7 @@ public interface ProductService {
 
  public List<Product> findProductByCategry(String category);
 
- public List<Product> getAllFilteredProducts(String category, List<String> colors,List<String> sizes,Integer minPrice, Integer maxPrice,Integer minDiscount,String sort, String stock, Integer pageNumber,Integer pageSize);
+ public MultipleProductResponse getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize);
 
  public List<Product> getAllProducts();
 

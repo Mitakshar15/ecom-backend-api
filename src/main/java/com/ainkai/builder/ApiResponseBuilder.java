@@ -90,4 +90,10 @@ public class ApiResponseBuilder {
         }
         return reviewDto;
     }
+
+    public void buildMultipleProductResponse(MultipleProductResponse response,String statusMessage) {
+        response.setMetadata(new Metadata().timestamp(Instant.now()));
+        response.setStatus(new Status().statusCode(HttpStatus.OK.value()).statusMessage(statusMessage)
+                .statusMessageKey(Constants.RESPONSE_MESSAGE_KEY_SUCCESS));
+    }
 }
