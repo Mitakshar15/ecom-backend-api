@@ -2,13 +2,15 @@ package com.ainkai.service;
 
 import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Category;
 import com.ainkai.model.Product;
+import com.ainkai.model.dtos.CreateProductRequest;
 import com.ainkai.model.dtos.MultipleProductResponse;
 import com.ainkai.model.dtos.ProductResponse;
+import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.CategoryRepo;
 import com.ainkai.repository.ProductRepo;
-import com.ainkai.request.CreateProductRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,17 +29,11 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
 
-    private ProductRepo productRepo;
-    private UserService userService;
-    private CategoryRepo categoryRepo;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
     private final ApiResponseBuilder builder;
+    private final EcomApiUserMapper mapper;
 
-//    @Autowired
-//    public ProductServiceImpl(ProductRepo productRepo,CategoryRepo categoryRepo,UserService userService) {
-//        this.productRepo=productRepo;
-//        this.userService=userService;
-//        this.categoryRepo=categoryRepo;
-//    }
 
     @Override
     public Product createProduct(CreateProductRequest request)throws ProductException {
@@ -85,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDiscountedPrice(request.getDiscountedPrice());
         product.setDiscountPercent(request.getDiscountPercent());
         product.setCreatedAt(LocalDateTime.now());
-        product.setSizes(request.getSize());
+        product.setSizes(mapper.toSizeEntity(request.getSize()));
         product.setImageUrl(request.getImageUrl());
 
         Product savedProduct = productRepo.save(product);
@@ -102,15 +98,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long productId, Product request) throws ProductException {
-
-        Product product  = findProductById(productId);
-
+    public Product updateProduct(UpdateProductRequest request) throws ProductException {
+        Product product  = findProductById(request.getProductId());
         if(request.getQuantity()!=0){
             product.setQuantity(request.getQuantity());
         }
-
-
         return productRepo.save(product);
     }
 

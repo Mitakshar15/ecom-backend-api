@@ -16,9 +16,7 @@ import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
 import com.ainkai.model.dtos.*;
-import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;
-import com.ainkai.response.ApiResponse;
 import com.ainkai.service.CartService;
 import com.ainkai.service.CustomUserServiceImpl;
 import com.ainkai.service.UserService;
@@ -32,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 

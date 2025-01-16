@@ -164,3 +164,175 @@ paths:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/orders/deliver/{orderId}:
+    put:
+      tags:
+        - ecomApi V1 Admin-Controller
+      summary: "Deliver Order"
+      operationId: "deliverOrderHandler"
+      parameters:
+        - name: "orderId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
+        '422':
+          description: "Order Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/users:
+    get:
+      tags:
+        - ecomApi V1 Admin-Controller
+      summary: "Get All Users"
+      operationId: "findAllUsersHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/AllUserResponse"
+        '422':
+          description: "Order Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/product/create:
+    post:
+      tags:
+        - ecomApi V1 Admin-Controller
+      summary: "Create Products"
+      operationId: "createProductHandler"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/CreateProductRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/product/update:
+    put:
+      tags:
+        - ecomApi V1 Admin-Controller
+      summary: "Update Product"
+      operationId: "updateProductHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/updateProductRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/product/allProducts:
+    get:
+      tags:
+        - ecomApi V1 Admin-Controller
+      summary: "Get All Products"
+      operationId: "findAllProductHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/AllProductResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'

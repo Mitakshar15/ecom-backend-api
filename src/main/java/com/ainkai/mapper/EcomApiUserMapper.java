@@ -17,6 +17,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper (componentModel = "spring")
 public interface EcomApiUserMapper {
@@ -90,6 +91,12 @@ public interface EcomApiUserMapper {
 
  BasicOrderResponse toBasicOrderResponse(BaseApiResponse response);
 
+ List<UserResponseDto> toUserResponseDtoList(List<User> userList);
 
+ AllUserResponse toAllUserResponse(BaseApiResponse response);
+
+ Set<Size> toSizeEntity(Set<SizeDto> sizeDto);
+
+ AllProductResponse toAllProductResponse(BaseApiResponse response);
 
 }
