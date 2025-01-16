@@ -2,11 +2,12 @@ package com.ainkai.config;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,59 +19,51 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
+@EnableWebSecurity
 public class AppConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests(Authorize -> Authorize
+        http
+                .securityMatcher("/**")
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration cfg = new CorsConfiguration();
+                        cfg.setAllowedOrigins(Arrays.asList(
+                                "http://localhost:3000",
+                                "http://localhost:4000",
+                                "http://localhost:4200",
+                                "https://mitakshar-ecom.vercel.app/",
+                                "http://localhost:5454/swagger-ui/index.html#/",
+                                "http://localhost:63343"
+                        ));
+//                        cfg.setAllowedMethods(Collections.singletonList("*"));
+                        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                        cfg.setAllowCredentials(true);
+                        cfg.setAllowedHeaders(Collections.singletonList("*"));
+                        cfg.setExposedHeaders(List.of("Authorization"));
+                        cfg.setMaxAge(3600L);
+                        return cfg;
+                    }
+                }))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
-                .csrf().disable()
-                .cors().configurationSource(new CorsConfigurationSource() {
-
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                        CorsConfiguration cfg = new CorsConfiguration();
-
-                        cfg.setAllowedOrigins(Arrays.asList(
-
-                                        "http://localhost:3000",
-                                        "http://localhost:4000",
-                                        "http://localhost:4200",
-                                        "https://mitakshar-ecom.vercel.app/",
-                                        "http://localhost:5454/swagger-ui/index.html#/",
-                                        "http://localhost:63343"
-
-                                )
-                        );
-                        //cfg.setAllowedMethods(Arrays.asList("GET", "POST","DELETE","PUT"));
-                        cfg.setAllowedMethods(Collections.singletonList("*"));
-                        cfg.setAllowCredentials(true);
-                        cfg.setAllowedHeaders(Collections.singletonList("*"));
-                        cfg.setExposedHeaders(Arrays.asList("Authorization"));
-                        cfg.setMaxAge(3600L);
-                        return cfg;
-
-                    }
-                })
-                .and()
-                .httpBasic()
-                .and()
-                .formLogin();
+                .formLogin(formLogin -> formLogin.permitAll())
+                .httpBasic(httpBasic -> httpBasic.init(http));
 
         return http.build();
-
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
