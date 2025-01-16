@@ -12,14 +12,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Rating {
     
     @Id
@@ -36,11 +35,9 @@ public class Rating {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="product_id",nullable=false)
     private Product product;
- 
-    
+
     @Column(name = "rating")
     private double rating;
-
 
     private LocalDateTime createdAt;
 

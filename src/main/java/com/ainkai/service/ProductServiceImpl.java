@@ -29,17 +29,11 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
 
-    private ProductRepo productRepo;
-    private UserService userService;
-    private CategoryRepo categoryRepo;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
     private final ApiResponseBuilder builder;
     private final EcomApiUserMapper mapper;
-//    @Autowired
-//    public ProductServiceImpl(ProductRepo productRepo,CategoryRepo categoryRepo,UserService userService) {
-//        this.productRepo=productRepo;
-//        this.userService=userService;
-//        this.categoryRepo=categoryRepo;
-//    }
+
 
     @Override
     public Product createProduct(CreateProductRequest request)throws ProductException {

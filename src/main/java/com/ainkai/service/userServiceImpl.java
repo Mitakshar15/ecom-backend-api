@@ -19,10 +19,10 @@ import java.util.Optional;
 @AllArgsConstructor
 public class userServiceImpl implements UserService{
 
-    private UserRepo userRepo;
-    private AddressRepo addressRepo;
-    private JwtProvider jwtProvider;
-    private EcomApiUserMapper mapper;
+    private final UserRepo userRepo;
+    private final AddressRepo addressRepo;
+    private final JwtProvider jwtProvider;
+    private final EcomApiUserMapper mapper;
 
     @Override
     public User findUserById(Long userId) throws UserException {

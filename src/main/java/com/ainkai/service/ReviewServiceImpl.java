@@ -7,27 +7,19 @@ import com.ainkai.model.Rating;
 import com.ainkai.model.Review;
 import com.ainkai.model.User;
 import com.ainkai.model.dtos.ReviewRequest;
-import com.ainkai.repository.ProductRepo;
 import com.ainkai.repository.ReviewRepo;
-import com.ainkai.request.RatingRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
-     private ReviewRepo reviewRepo;
-     private ProductRepo productRepo;
-     private ProductService productService;
-     private RatingService ratingService;
-
-    public ReviewServiceImpl(ProductRepo productRepo, ProductService productService, ReviewRepo reviewRepo,RatingService ratingService) {
-        this.productRepo = productRepo;
-        this.productService = productService;
-        this.reviewRepo = reviewRepo;
-        this.ratingService = ratingService;
-    }
+     private final ReviewRepo reviewRepo;
+     private final ProductService productService;
+     private final RatingService ratingService;
 
     @Override
     public Review createReview(ReviewRequest request, User user) throws ProductException {

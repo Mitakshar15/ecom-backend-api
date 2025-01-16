@@ -33,37 +33,23 @@ import java.util.Optional;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private CartService cartService;
-    private CartItemService cartItemService;
-    @Autowired
-    private AddressRepo addressRepo;
-    @Autowired
-    private OrderRepo orderRepo;
-    @Autowired
-    private OrderItemService orderItemService;
-    @Autowired
-    private OrderItemRepo orderItemRepo;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private  UserService userService;
-    @Autowired
-    private OrderConfirmationEmail orderConfirmationEmailsender;
-    @Autowired
-    private  ProductService productService;
-    private EcomApiUserMapper mapper;
+
+    private final CartService cartService;
+    private final AddressRepo addressRepo;
+    private final OrderRepo orderRepo;
+    private final OrderItemRepo orderItemRepo;
+    private final UserRepo userRepo;
+    private final ProductService productService;
+    private final EcomApiUserMapper mapper;
 
     @Override
     public Order createOrder(User user, AddressDto request)throws ProductException {
-        //Set The User for Shiping address
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
-        //after saving the user, save to the database
         //Add Checks for Alredy existing Address
 
-       Address finalAddress = new Address();
-       if(isShippingAddressExists(user.getId(),shippingAddress)){
+        Address finalAddress = new Address();
+        if(isShippingAddressExists(user.getId(),shippingAddress)){
            Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
            if(opt.isPresent()){
                finalAddress = opt.get();
@@ -132,12 +118,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findOrderById(Long orderId) throws OrderException {
         Optional<Order> opt = orderRepo.findById(orderId);
-
         if(opt.isPresent()){
             return opt.get();
         }
         throw  new OrderException("ORDER NOT EXISTS WITH ORDER ID : "+ orderId);
-
     }
 
     @Override
@@ -148,7 +132,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
-
         Order order = findOrderById(orderId);
         order.setOrderStatus(OrderStatus.PLACED);
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
