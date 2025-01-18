@@ -47,7 +47,7 @@
     Database Setup
       Create a MySQL database
       Update src/main/resources/application.properties:
-             # Database Configuration
+# Database Configuration
              spring.datasource.url=jdbc:mysql://localhost:3306/your_database
              spring.datasource.username=your_username
              spring.datasource.password=your_password
