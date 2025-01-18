@@ -1,72 +1,86 @@
 🛍️ E-Commerce Backend Service
-📝 Project Overview
-A robust, secure, and scalable e-commerce backend service built with modern Java technologies, providing comprehensive API solutions for online retail platforms.
+
+📋 Table of Contents: 
+    Project Overview
+    Technology Stack
+    Key Features
+    Prerequisites
+    Installation
+    Configuration
+    Running the Application
+    API Documentation
+    Authentication
+    Contribution Guidelines
+    License
+    Contact
+
+🌟 Project Overview
+    A robust, secure, and scalable e-commerce backend service designed to provide comprehensive API solutions for modern online retail platforms. Built with cutting-edge Java technologies to ensure high performance, security, and extensibility.
 
 🚀 Technology Stack
-Framework: Spring Boot
-Security: Spring Security with JWT Authentication
-Documentation: OpenAPI (Swagger)
-Code Generation: OpenAPI Class Generator
-Database: MySQL
-Build Tool: Maven
-Java Version: Java 17
+    Category:	Technology
+    Framework:	Spring Boot
+    Security:	Spring Security, JWT Authentication
+    Documentation:	OpenAPI (Swagger)
+    Code Generation:	OpenAPI Class Generator
+    Database:	MySQL
+    Build Tool:	Maven
+    Java Version:	Java 17
+
 ✨ Key Features
-🔐 Secure JWT Authentication
-📄 Comprehensive API Documentation
-🛡️ Role-Based Access Control
-🌐 RESTful API Endpoints
-🔍 OpenAPI Specification Support
-🛠️ Prerequisites
-Java 17 JDK
-MySQL Database
-Maven 3.8+
-IntelliJ IDEA (Recommended)
-🔧 Installation & Setup
-1. Clone the Repository
-BASH
+    🔐 Secure JWT-based authentication
+    📄 Comprehensive API documentation
+    🛡️ Role-based access control
+    🌐 RESTful API endpoints
+    🔍 OpenAPI specification support
+    📦 Scalable microservice architecture
+    🛠️ Prerequisites:
+       Java 17 JDK
+       MySQL Database
+       Maven 3.8+
+       IntelliJ IDEA
 
-git clone https://github.com/Mitakshar15/ecommerce-backend.git
-cd ecommerce-backend
-2. Database Configuration
-Create a MySQL database
-Update application.properties:
-PROPERTIES
+🔧 Installation
+    1. Clone the Repository: git clone https://github.com/your-username/ecommerce-backend.git
+    
+📝 Configuration
+    Database Setup
+      Create a MySQL database
+      Update src/main/resources/application.properties:
+             # Database Configuration
+             spring.datasource.url=jdbc:mysql://localhost:3306/your_database
+             spring.datasource.username=your_username
+             spring.datasource.password=your_password
 
-spring.datasource.url=jdbc:mysql://localhost:3306/your_database
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-3. Build the Project
-BASH
+# Hibernate Configuration
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
 
-mvn clean install
-4. Run the Application
-BASH
+🚀 Running the Application
+    Build the Project
+    Clean and install dependencies: mvn clean install
+    Run the application
 
-mvn spring-boot:run
 📖 API Documentation
-Swagger UI: http://localhost:8080/swagger-ui.html
-OpenAPI Specification: http://localhost:8080/v3/api-docs
+    Endpoint	Description:
+                          Swagger UI:	http://localhost:8080/swagger-ui.html
+                          OpenAPI Specification:	http://localhost:8080/v3/api-docs
 🔐 Authentication
-The application uses JWT (JSON Web Token) for secure authentication with role-based access control.
+    The application implements JWT authentication with:
+            Token-based authentication
+            Role-based access control
+            Secure endpoint protection
+            Refresh token mechanism
 
-💻 IDE Recommendation
-Preferred IDE: IntelliJ IDEA
-Note: Eclipse may have compatibility issues with Lombok
-🤝 Contribution Guidelines
-Fork the repository
-Create a feature branch (git checkout -b feature/AmazingFeature)
-Commit your changes (git commit -m 'Add some AmazingFeature')
-Push to the branch (git push origin feature/AmazingFeature)
-Open a Pull Request
-📄 License
-This project is open-source and free to use under the MIT License.
+🤝 Contribution Guidelines: Contact Me if you want to contribute
+
+📄 License : This project is open-source and free to use.
 
 👤 Contact
-Mitakshar
+   Email: work.mitakshar@gmail.com
+   LinkedIn: [Your LinkedIn Profile]
+   GitHub: https://github.com/Mitakshar15
 
-Email: work.mitakshar@gmail.com
-GitHub: Mitakshar15
-🌟 Support
-If you find this project helpful, please consider giving it a ⭐ star on GitHub!
+Built by Mitakshar
 
-Built with ❤️ by Mitakshar
+Don't forget to give this repository a ⭐ if you find it helpful!
