@@ -5,7 +5,7 @@ import threading
 import random
 
 # API endpoint for product creation
-url = "http://localhost:5454/api/admin/products/"
+url = "http://localhost:5454/v1/admin/product/create"
 
 # Static part of the request data
 static_data = {
