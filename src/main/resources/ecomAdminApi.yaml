@@ -241,6 +241,13 @@ paths:
         - ecomApi V1 Admin-Controller
       summary: "Create Products"
       operationId: "createProductHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+            format: "int64"
       requestBody:
         content:
           application/json:

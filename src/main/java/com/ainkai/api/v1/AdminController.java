@@ -82,7 +82,7 @@ public class AdminController implements EcomApiV1AdminControllerApi {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> createProductHandler(@RequestBody CreateProductRequest request){
+    public ResponseEntity<EcomApiServiceBaseApiResponse> createProductHandler(@RequestHeader("Authorization")String jwt,@RequestBody CreateProductRequest request){
         Product product = productService.createProduct(request);
         if(product !=null) {
             EcomApiServiceBaseApiResponse response = mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("Product created successfully"));
