@@ -1,9 +1,11 @@
 package com.ainkai.exceptions;
 
-public class ProductException extends Exception{
+public class ProductException extends RuntimeException{
 
-   public ProductException(String message){
-       super(message);
-   }
+    private final String messageKey;
+    public ProductException(String messageKey, String message) {
+        super(message);
+        this.messageKey = messageKey;
+    }
 
 }

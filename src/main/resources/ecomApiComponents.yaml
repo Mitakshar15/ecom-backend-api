@@ -1,0 +1,594 @@
+components:
+  schemas:
+    # ************ Common API Response (From hub-library type mapping)***********
+    BaseApiResponse:
+      type: object
+      discriminator:
+        propertyName: respType
+
+    EcomApiServiceBaseApiResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+
+    #************* Auth Responses *****************
+    SignUpResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    SignInResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/AuthResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+    #************* User API Responses *****************
+    GetProfileResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/UserResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    EditProfileResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/UserResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    AllUserResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponseDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+
+    #************ Address Api Responses ****************
+    AddNewAddressResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    DeleteAddressResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    EditAddressResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    GetAllAddressResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    #************ Cart & Product Api Responses ****************
+    CartResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/CartDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    AddItemToCartResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    CartItemResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+
+    MultipleProductResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+        totalItems:
+          type: integer
+        currentPage:
+          type: integer
+
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    ProductResponse:
+      type: object
+      properties:
+        product:
+          type: object
+          $ref: '#/components/schemas/ProductDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    RatingResponse:
+      type: object
+      properties:
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RatingDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    GetAllReviewResponse:
+      type: object
+      properties:
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    #******** Orders And Reviews Responses *********
+    OrderResponse:
+      type: object
+      properties:
+        order:
+          type: object
+          $ref: '#/components/schemas/OrderDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    BasicOrderResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    OrderHistoryResponse:
+      type: object
+      properties:
+        order_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderDto'
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    #************ Ecom Api Requests ****************
+    SignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          description: First name of the user.
+        lastName:
+          type: string
+          description: Last name of the user.
+        password:
+          type: string
+          description: User's password.
+        email:
+          type: string
+          format: email
+          description: User's email address.
+        role:
+          type: string
+          description: Role assigned to the user.
+        mobile:
+          type: string
+          description: User's mobile number.
+
+    SignInRequest:
+      type: object
+      required:
+        -email
+        -password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    EditProfileRequest:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        mobile:
+          type: "string"
+
+    AddressRequest:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        streetAddress:
+          type: "string"
+        city:
+          type: "string"
+        state:
+          type: "string"
+        zipCode:
+          type: "string"
+        mobile:
+          type: "string"
+    #****** Cart & Product Api Requests *********
+    AddItemToCartRequest:
+      type: "object"
+      properties:
+        productId:
+          type: "integer"
+          format: "int64"
+        size:
+          type: "string"
+        quantity:
+          type: "integer"
+          format: "int32"
+        Price:
+          type: "integer"
+          format: "int32"
+
+    AllProductResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDto"
+      allOf:
+        - $ref: '#/components/schemas/EcomApiServiceBaseApiResponse'
+
+    #************ Ecom Api Dto's ****************
+    AuthResponseDto:
+      type: object
+      required:
+        -jwt
+        -message
+      properties:
+        jwt:
+          type: string
+        message:
+          type: string
+
+    UserResponseDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        role:
+          type: "string"
+        mobile:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "local-date-time"
+
+    AddressDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        streetAddress:
+          type: "string"
+        city:
+          type: "string"
+        state:
+          type: "string"
+        zipCode:
+          type: "string"
+        mobile:
+          type: "string"
+
+    CartDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        userId:
+          type: "integer"
+          format: "int64"
+        cartItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemDto"
+          uniqueItems: true
+        totalPrice:
+          type: "number"
+          format: "double"
+        totalItem:
+          type: "integer"
+          format: "int32"
+        totalDiscountedPrice:
+          type: "integer"
+          format: "int32"
+        discount:
+          type: "integer"
+          format: "int32"
+
+    CartItemDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        product:
+          $ref: "#/components/schemas/CartItemProductDto"
+        size:
+          type: "string"
+        quantity:
+          type: "integer"
+          format: "int32"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+        userId:
+          type: "integer"
+          format: "int64"
+
+    CartItemProductDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        brand:
+          type: "string"
+        color:
+          type: "string"
+        imageUrl:
+          type: "string"
+
+    ProductCategoryDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        parentCategory:
+          $ref: "#/components/schemas/ProductCategoryDto"
+        level:
+          type: "integer"
+          format: "int32"
+
+    CreateProductRequest:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+        discountPercent:
+          type: "integer"
+          format: "int32"
+        quantity:
+          type: "integer"
+          format: "int32"
+        brand:
+          type: "string"
+        color:
+          type: "string"
+        size:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SizeDto"
+          uniqueItems: true
+        imageUrl:
+          type: "string"
+        topLevelCategory:
+          type: "string"
+        secondLevelCategory:
+          type: "string"
+        thirdLevelCategory:
+          type: "string"
+
+    updateProductRequest:
+      type: object
+      properties:
+        productId:
+          type: long
+        quantity:
+          type: integer
+
+    SizeDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        quantity:
+          type: "integer"
+          format: "int32"
+
+    ProductDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+        discountPercent:
+          type: "integer"
+          format: "int32"
+        quantity:
+          type: "integer"
+          format: "int32"
+        brand:
+          type: "string"
+        color:
+          type: "string"
+        sizes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SizeDto"
+        imageUrl:
+          type: "string"
+        category:
+          $ref: "#/components/schemas/ProductCategoryDto"
+
+    OrderItemDTO:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        product:
+          $ref: "#/components/schemas/CartItemProductDto"
+        quantity:
+          type: "integer"
+          format: "int32"
+        price:
+          type: "integer"
+          format: "int32"
+        discountedPrice:
+          type: "integer"
+          format: "int32"
+
+    OrderDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        order_id:
+          type: "string"
+        user_id:
+          type: "integer"
+          format: "int64"
+        orderItemList:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderItemDTO"
+        orderDate:
+          type: "string"
+          format: "local-date-time"
+        deliveryDate:
+          type: "string"
+          format: "local-date-time"
+        shippingAddress:
+          $ref: "#/components/schemas/AddressDto"
+        totalPrice:
+          type: "number"
+          format: "double"
+        totalDiscountedPrice:
+          type: "integer"
+          format: "int32"
+        discount:
+          type: "integer"
+          format: "int32"
+        orderStatus:
+          type: "string"
+        totalItem:
+          type: "integer"
+          format: "int32"
+        createdAt:
+          type: "string"
+          format: "local-date-time"
+
+    RatingDto:
+      type: "object"
+      properties:
+        rating:
+          type: "number"
+          format: "double"
+
+    ReviewDto:
+      type: "object"
+      properties:
+        id:
+          type: "long"
+        review:
+          type: "string"
+        userName:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "local-date-time"
+        rating:
+          type: "double"
+
+
+    RatingRequest:
+      type: object
+      properties:
+        rating:
+          type: double
+        productId:
+          type: long
+
+    ReviewRequest:
+      type: object
+      properties:
+        productId:
+          type: long
+        rating:
+          type: double
+        review:
+          type: string
+

@@ -3,9 +3,7 @@ package com.ainkai.scheduler;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.model.Order;
 import com.ainkai.repository.OrderRepo;
-import com.ainkai.service.OrderService;
-import com.ainkai.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,19 +11,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class DeleteOrderHistory {
 
-    UserService userService;
-    @Autowired
-    OrderService orderService;
-    OrderRepo orderRepo;
-
-
-    public DeleteOrderHistory(OrderRepo orderRepo, OrderService orderService, UserService userService) {
-        this.orderRepo = orderRepo;
-        this.orderService = orderService;
-        this.userService = userService;
-    }
+    private final OrderRepo orderRepo;
 
     @Scheduled(cron ="0 0 0 * * *")
     public void clearOrderHistoryAfterOneYear()throws OrderException{

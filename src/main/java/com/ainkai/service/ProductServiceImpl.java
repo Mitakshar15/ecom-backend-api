@@ -1,11 +1,17 @@
 package com.ainkai.service;
 
+import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Category;
 import com.ainkai.model.Product;
+import com.ainkai.model.dtos.CreateProductRequest;
+import com.ainkai.model.dtos.MultipleProductResponse;
+import com.ainkai.model.dtos.ProductResponse;
+import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.CategoryRepo;
 import com.ainkai.repository.ProductRepo;
-import com.ainkai.request.CreateProductRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,24 +20,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
 
-    private ProductRepo productRepo;
-    private UserService userService;
-    private CategoryRepo categoryRepo;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
+    private final ApiResponseBuilder builder;
+    private final EcomApiUserMapper mapper;
 
-    @Autowired
-    public ProductServiceImpl(ProductRepo productRepo,CategoryRepo categoryRepo,UserService userService) {
-        this.productRepo=productRepo;
-        this.userService=userService;
-        this.categoryRepo=categoryRepo;
-    }
 
     @Override
     public Product createProduct(CreateProductRequest request)throws ProductException {
@@ -79,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDiscountedPrice(request.getDiscountedPrice());
         product.setDiscountPercent(request.getDiscountPercent());
         product.setCreatedAt(LocalDateTime.now());
-        product.setSizes(request.getSize());
+        product.setSizes(mapper.toSizeEntity(request.getSize()));
         product.setImageUrl(request.getImageUrl());
 
         Product savedProduct = productRepo.save(product);
@@ -96,15 +99,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long productId, Product request) throws ProductException {
-
-        Product product  = findProductById(productId);
-
+    public Product updateProduct(UpdateProductRequest request) throws ProductException {
+        Product product  = findProductById(request.getProductId());
         if(request.getQuantity()!=0){
             product.setQuantity(request.getQuantity());
         }
-
-
         return productRepo.save(product);
     }
 
@@ -115,8 +114,7 @@ public class ProductServiceImpl implements ProductService {
         if(opt.isPresent()){
             return  opt.get();
         }
-        throw new ProductException("PRODUCT NOT FOUND WITH ID"+productId);
-
+        throw new ProductException("PRODUCT EXCEPTION ","PRODUCT NOT FOUND WITH ID " + productId);
 
     }
 
@@ -125,16 +123,12 @@ public class ProductServiceImpl implements ProductService {
         return List.of();
     }
 
+
     @Override
-    public Page<Product> getAllProduct(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
-
-
-
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-
-
+    public MultipleProductResponse getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
+        // Todo: Removed the Pagination Since OpenApi Does Not Support Page<>
+        MultipleProductResponse productResponse = new MultipleProductResponse();
         List<Product> productList  = productRepo.filterProducts(category,minPrice,maxPrice,minDiscount,sort);
-
         if(!colors.isEmpty()){
             productList = productList.stream().filter(p->colors.stream().anyMatch(c->c.equalsIgnoreCase(p.getColor()))).collect(Collectors.toList());
         }
@@ -146,16 +140,15 @@ public class ProductServiceImpl implements ProductService {
                 productList = productList.stream().filter(p->p.getQuantity()<1).collect(Collectors.toList());
             }
         }
-
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(),productList.size());
-
-        List<Product> pageContent = productList.subList(startIndex,endIndex);
-
-
-        Page<Product> filteredProducts = new PageImpl<>(pageContent,pageable,productList.size());
-
-        return filteredProducts;
+        int startIndex = (pageNumber-1)*pageSize;
+        if(startIndex<0){
+            startIndex = 0;
+        }
+        int endIndex = Math.min(startIndex+pageSize,productList.size());
+        productResponse.setProducts(builder.buildProductDtoList(productList.subList(startIndex,endIndex)));
+        productResponse.setCurrentPage(pageNumber);
+        productResponse.setTotalItems(productList.size());
+        return productResponse;
     }
 
     @Override
@@ -165,7 +158,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> searchProduct(String query) {
-        return List.of();
+        List<Product> productList = productRepo.findProductBySearchParam(query);
+        if(productList.isEmpty()){
+            throw new ProductException("PRODUCT EXCEPTION ","PRODUCT NOT FOUND");
+        }
+        return productList;
     }
 
 }

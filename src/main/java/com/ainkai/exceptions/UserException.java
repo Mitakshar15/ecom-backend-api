@@ -1,10 +1,14 @@
 package com.ainkai.exceptions;
 
-public class UserException extends Exception {
+import lombok.Getter;
 
-    public UserException(String message) {
+@Getter
+public class UserException extends RuntimeException {
+
+    private final String messageKey;
+    public UserException(String messageKey, String message) {
         super(message);
-        // TODO Auto-generated constructor stub
+        this.messageKey = messageKey;
     }
 }
 
