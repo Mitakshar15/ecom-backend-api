@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepo userRepo;
     private final ProductService productService;
     private final EcomApiUserMapper mapper;
-
+    private final CartItemService cartItemService;
     @Override
     public Order createOrder(User user, AddressDto request)throws ProductException {
         Address shippingAddress = mapper.toAddressEntity(request);
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepo.save(item);
         }
         //Clear the cart Before creating the order
-       // cartItemService.removeAllItems(cart.getId());
+        cartItemService.removeAllItems(cart.getId());
         return saveOrder;
     }
 

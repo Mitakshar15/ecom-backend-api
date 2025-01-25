@@ -99,4 +99,6 @@ public interface EcomApiUserMapper {
 
  AllProductResponse toAllProductResponse(BaseApiResponse response);
 
+ List<ProductDto> toProductDtoList(List<Product> productList);
+
 }

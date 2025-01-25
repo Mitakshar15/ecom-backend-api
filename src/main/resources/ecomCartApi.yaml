@@ -455,3 +455,34 @@ paths:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
 
+  /v1/products/search/{searchParam}:
+    get:
+      tags:
+        - ecomApi V1 Product-Controller
+      summary: "Get Searched Products"
+      operationId: "searchProductHandler"
+      parameters:
+        - name: "searchParam"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/MultipleProductResponse"
+        '422':
+          description: "Product Request is valid but the service was not able to process it ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '400':
+          description: "Validations failed for request arguments ..."
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
