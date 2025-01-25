@@ -26,5 +26,8 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
  @Query("SELECT p FROM Product p WHERE (p.title =:title AND p.brand =:brand AND p.color=:color)")
  public  Product findProductByName(@Param("title") String title,@Param("brand")String brand,@Param("color") String color);
 
+ @Query("SELECT p FROM Product p WHERE (p.title LIKE %:searchParam%)")
+ public List<Product> findProductBySearchParam(String searchParam);
+
 
 }

@@ -78,6 +78,12 @@ public class UserProductController implements EcomApiV1ProductControllerApi {
            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    public ResponseEntity<MultipleProductResponse> searchProductHandler(@PathVariable("searchParam") String searchParam){
+           MultipleProductResponse response = mapper.toMultipleProductResponse(builder.buildSuccessApiResponse("SEARCH PRODUCTS SUCCESS"));
+           response.setProducts(mapper.toProductDtoList(productService.searchProduct(searchParam)));
+           return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 

@@ -4,12 +4,12 @@ import time
 import threading
 
 # API endpoint
-url = "http://localhost:5454/auth/signin"
+url = "http://localhost:5454/v1/auth/signin"
 
 # Static login data
 static_data = {
-    "email": "sales0085.test129@example.com",
-    "password": "password123"
+    "email": "ecomapi.001@example.com",
+    "password": "123"
 }
 
 # Lock for synchronization
@@ -23,8 +23,8 @@ def send_request(index):
         # Ensure a 1-second delay globally
         with lock:
             now = time.time()
-            if now - last_request_time < 0.01:
-                time.sleep(0.01 - (now - last_request_time))
+            if now - last_request_time < 0.001:
+                time.sleep(0.001 - (now - last_request_time))
             last_request_time = time.time()
         
         # Send the request

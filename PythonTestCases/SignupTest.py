@@ -5,11 +5,11 @@ import time
 import threading
 
 # API endpoint
-url = "http://localhost:5454/auth/signup"
+url = "http://localhost:5454/v1/auth/signup"
 
 # Function to generate unique email
 def generate_unique_email(index):
-    return f"ecomApiTestSample{index}@example.com"
+    return f"ecomapi.00{index}@example.com"
 
 # Lock for synchronization
 lock = threading.Lock()
@@ -20,10 +20,10 @@ def send_request(index):
     global last_request_time
     unique_email = generate_unique_email(index)  # Generate unique email for each request
     data = {
-        "firstName": f"User{index}",
-        "lastName": f"Name{index}",
+        "firstName": f"Sales{index}",
+        "lastName": f":LName",
         "email": unique_email,
-        "password": "password123"
+        "password": "123"
     }
     try:
         # Ensure a 1-second delay globally

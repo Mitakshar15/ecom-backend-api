@@ -37,8 +37,10 @@ public class AppConfig {
                                 "http://localhost:4000",
                                 "http://localhost:4200",
                                 "https://mitakshar-ecom.vercel.app/",
+                                "https://angular-frontend-js4romm8g-mitakshar15s-projects.vercel.app/",
                                 "http://localhost:5454/swagger-ui/index.html#/",
-                                "http://localhost:63343"
+                                "http://localhost:63343",
+                                "https://fashionhubmitakshar.vercel.app"
                         ));
 //                        cfg.setAllowedMethods(Collections.singletonList("*"));
                         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
