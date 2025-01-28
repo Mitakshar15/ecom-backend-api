@@ -7,13 +7,9 @@ import time
 import threading
 
 # API endpoint
-url = "http://localhost:5454/api/products?color=&size=&minPrice=0&maxPrice=10000&minDiscount=0&category=&sort=price_low&stock=null&pageNumber=0&pageSize=100"
+url = "http://localhost:5454/v1/products?color=&size=&minPrice=0&maxPrice=10000&minDiscount=0&category=&sort=price_low&stock=null&pageNumber=0&pageSize=100"
 
-token = input("ENTER THE JWT TOKEN")
 
-headers = {
-    "Authorization": f"Bearer {token}"
-}
 # Lock for synchronization
 lock = threading.Lock()
 last_request_time = 0  # Global tracker for the last request time
@@ -30,7 +26,7 @@ def send_request(index):
             last_request_time = time.time()
         
         # Send the request
-        response = requests.get(url,headers=headers ,timeout=5)
+        response = requests.get(url,timeout=5)
         print(f"Request {index}: Response: {response.status_code}, {response.text}")
     except requests.exceptions.RequestException as e:
         print(f"Request {index} failed: {e}")
