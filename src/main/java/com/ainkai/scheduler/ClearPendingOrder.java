@@ -20,7 +20,7 @@ public class ClearPendingOrder {
     private final OrderService orderService;
     private final OrderRepo orderRepo;
 
-    @Scheduled(cron ="0 0/10 * * * *")
+    @Scheduled(cron ="0 0 0 LW * *")
     public void clearOrders() throws OrderException {
         List<Order> pendingOrders = orderRepo.getUsersPendingOrders();
         for(Order o : pendingOrders){

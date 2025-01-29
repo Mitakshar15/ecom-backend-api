@@ -16,7 +16,7 @@ public class DeleteOrderHistory {
 
     private final OrderRepo orderRepo;
 
-    @Scheduled(cron ="0 0 0 * * *")
+    @Scheduled(cron ="0 0 0 LW * *")
     public void clearOrderHistoryAfterOneYear()throws OrderException{
 
         LocalDateTime checkDate = LocalDateTime.now().minusYears(1);
