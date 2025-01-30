@@ -82,7 +82,7 @@
 
 # 👤 Contact
 * Email: work.mitakshar@gmail.com
-* LinkedIn: [Your LinkedIn Profile]
+* LinkedIn: https://in.linkedin.com/in/mitakshara-hegde-676951174
 * GitHub: https://github.com/Mitakshar15
 
 # Built by Mitakshar
