@@ -2,12 +2,10 @@ package com.ainkai.service;
 
 import com.ainkai.exceptions.CartItemException;
 import com.ainkai.exceptions.UserException;
-import com.ainkai.model.Cart;
-import com.ainkai.model.CartItem;
-import com.ainkai.model.Product;
-import com.ainkai.model.User;
+import com.ainkai.model.*;
 import com.ainkai.repository.CartItemRepo;
 import com.ainkai.repository.CartRepo;
+import com.ainkai.user.domain.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,14 +38,14 @@ public class CartItemServiceImpl implements CartItemService{
             item.setDiscountedPrice(item.getSku().getDiscountedPrice()*item.getQuantity());
         }
         else {
-            throw new CartItemException("CART NOT UPDATED");
+            throw new CartItemException(Constants.DATA_NOT_FOUND_KEY,"CART NOT UPDATED");
         }
         return cartItemRepo.save(item);
     }
 
     @Override
-    public CartItem isCartItemExists(Cart cart, Product product, String size, Long userId) {
-        return cartItemRepo.isCartItemExists(cart,product,size,userId);
+    public CartItem isCartItemExists(Cart cart, Sku sku, Long userId) {
+        return cartItemRepo.isCartItemExists(cart,sku,userId);
     }
 
     @Override
@@ -59,7 +57,7 @@ public class CartItemServiceImpl implements CartItemService{
              cartItemRepo.deleteById(cartItemId);
          }
          else {
-             throw new UserException("CART KEY","CANNOT DELETE ANOTHER USERS CART");
+             throw new UserException(Constants.DATA_NOT_FOUND_KEY,"CANNOT DELETE ANOTHER USERS CART");
          }
     }
 
@@ -69,7 +67,7 @@ public class CartItemServiceImpl implements CartItemService{
         if(opt.isPresent()){
             return  opt.get();
         }
-        throw  new CartItemException("CART ITEM NOT FOUND WITH ID");
+        throw  new CartItemException(Constants.DATA_NOT_FOUND_KEY,"CART ITEM NOT FOUND WITH ID");
     }
 
     @Transactional

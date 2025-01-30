@@ -42,7 +42,7 @@ public class AdminController implements EcomApiV1AdminControllerApi {
     private final ApiResponseBuilder builder;
     private final ProductService productService;
 
-    public ResponseEntity<BasicOrderResponse> placeOrderHandler(@PathVariable("orderId")Long orderId, @Parameter(name = "Authorization", description = "", required = true, in = ParameterIn.HEADER) @RequestHeader("Authorization")String jwt) {
+    public ResponseEntity<BasicOrderResponse> placeOrderHandler(@PathVariable("orderId")Long orderId, @Parameter(name = "Authorization", description = "", required = true, in = ParameterIn.HEADER) @RequestHeader("Authorization")String jwt) throws OrderException {
         orderService.placedOrder(orderId);
         //String email =userService.findUserProfileByJwt(jwt).getEmail();
         //orderConfirmationEmailsender.sendEmail(email,"ORDER PLACED","THANK YOU "+ userService.findUserProfileByJwt(jwt).getFirstName() +" YOUR ORDDER HAS BEEN PLACED " + " ORDER ID : "+order.getOrderId()+" SHIPPING ADDRESS : "+order.getShippingAddress().getStreetAddress()+ " "+order.getShippingAddress().getCity()+" "+order.getShippingAddress().getZipCode());

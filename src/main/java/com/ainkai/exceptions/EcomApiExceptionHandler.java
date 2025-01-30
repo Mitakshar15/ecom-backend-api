@@ -103,6 +103,22 @@ public class EcomApiExceptionHandler {
 
         return new ResponseEntity<>(apiResponse, statusCode);
     }
+    @ExceptionHandler(CartItemException.class)
+    public ResponseEntity<EcomApiServiceBaseApiResponse> CartServiceExceptionHandler(CartItemException ex,
+                                                                                        WebRequest request) {
+        HttpStatusCode statusCode = switch (ex.getMessageKey()) {
+            case Constants.DATA_NOT_FOUND_KEY -> HttpStatus.NOT_FOUND;
+            case Constants.REQUEST_ERROR_KEY -> HttpStatus.BAD_REQUEST;
+            default -> HttpStatus.UNPROCESSABLE_ENTITY;
+        };
+
+        EcomApiServiceBaseApiResponse apiResponse = (EcomApiServiceBaseApiResponse) new EcomApiServiceBaseApiResponse()
+                .metadata(new Metadata().timestamp(Instant.now()))
+                .status(new Status().statusCode(statusCode.value()).statusMessage(ex.getMessage())
+                        .statusMessageKey(ex.getMessageKey()));
+
+        return new ResponseEntity<>(apiResponse, statusCode);
+    }
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<EcomApiServiceBaseApiResponse> missingServletRequestParameterExceptionHandler(
             MissingServletRequestParameterException ex, WebRequest request) {

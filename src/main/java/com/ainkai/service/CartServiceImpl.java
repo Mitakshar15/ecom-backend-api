@@ -1,11 +1,13 @@
 package com.ainkai.service;
 
 
+import com.ainkai.exceptions.CartItemException;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddItemToCartRequest;
 import com.ainkai.repository.CartRepo;
 import com.ainkai.repository.SkuRepository;
+import com.ainkai.user.domain.Constants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class CartServiceImpl implements CartService{
         Cart cart = cartRepo.findByUserId(userId);
         Sku sku = skuRepository.findById(addItemRequest.getSkuId()).get();
         addItemRequest.setPrice(sku.getDiscountedPrice());
-        CartItem isPresent = cartItemService.isCartItemExists(cart,sku.getProduct(),addItemRequest.getSize(),userId);
+        CartItem isPresent = cartItemService.isCartItemExists(cart,sku,userId);
         if(isPresent==null) {
             CartItem cartItem = new CartItem();
             cartItem.setSku(sku);
@@ -47,7 +49,7 @@ public class CartServiceImpl implements CartService{
             return "ITEM ADDED SUCCESSFULLY";
         }
         else {
-            return null;
+          throw new CartItemException(Constants.DATA_NOT_FOUND_KEY,"ITEM ALREDY EXISTS");
         }
 //        Cart cart = cartRepo.findByUserId(userId);
 //        Product product = productService.findProductById(addItemRequest.getProductId());

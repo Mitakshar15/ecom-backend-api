@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
      */
     private Sku createSku(CreateProductRequest request, Product product) throws ProductException {
         Sku sku = new Sku();
-        String skuCode = generateSkuCode(request.getBrand(), request.getColor(), "M");
+        String skuCode = generateSkuCode(request.getBrand(), request.getColor(), request.getTitle());
         if(skuRepository.existsBySkuCode(skuCode)){
             throw new ProductException("400","Error creating sku: Duplicate Sku Found " + skuCode);
         }
@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
      * Generates SKU code
      */
     private String generateSkuCode(String brand, String color, String title) {
-        return String.format("%s %c %s", brand, color.charAt(0), title);
+        return String.format("%s %c %s", brand, color.charAt(0), title.charAt(title.length() - 1)).toUpperCase();
     }
 
     @Override

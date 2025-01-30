@@ -27,7 +27,8 @@ public class OrderItem {
 
     private int quantity;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sku_id")
     private Sku sku;
 
     private  Long userId;

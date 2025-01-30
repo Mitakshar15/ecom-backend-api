@@ -15,7 +15,7 @@ import java.util.List;
 public interface OrderService  {
 
 
-    public Order createOrder(User user, AddressDto shippingAddress) throws ProductException, UserException;
+    public Order createOrder(User user, AddressDto shippingAddress) throws ProductException, UserException, OrderException;
 
     public Order findOrderById(Long orderId) throws OrderException;
 

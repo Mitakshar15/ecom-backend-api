@@ -18,6 +18,7 @@ import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddressDto;
 import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.*;
+import com.ainkai.user.domain.Constants;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
 import jakarta.mail.MessagingException;
@@ -46,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final SkuRepository skuRepository;
 
     @Override
-    public Order createOrder(User user, AddressDto request) throws ProductException, UserException {
+    public Order createOrder(User user, AddressDto request) throws ProductException, UserException, OrderException {
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
         //Add Checks for Alredy existing Address
@@ -71,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         //now create a List of Order items and fetch each order Item One by One
         List<OrderItem> orderItems = new ArrayList<>();
         if(cart.getCartItems().isEmpty()){
-            throw new OrderException("There are no cart items in this cart");
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
         }
         //Loop through Each cart item, and add the cart item to respective orderitem
         for(CartItem item :cart.getCartItems() ){
@@ -134,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
         if(opt.isPresent()){
             return opt.get();
         }
-        throw  new OrderException("ORDER NOT EXISTS WITH ORDER ID : "+ orderId);
+        throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
     }
 
     @Override
@@ -175,6 +176,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order cancledOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order == null){
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.CANCELLED);
         return  orderRepo.save(order);
     }
@@ -187,6 +191,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         orderRepo.deleteById(orderId);
 
     }

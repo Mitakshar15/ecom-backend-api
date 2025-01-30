@@ -501,8 +501,8 @@ components:
         id:
           type: "integer"
           format: "int64"
-        product:
-          $ref: "#/components/schemas/CartItemProductDto"
+        sku:
+          $ref: "#/components/schemas/OrderSkuDto"
         quantity:
           type: "integer"
           format: "int32"
@@ -647,4 +647,22 @@ components:
         description:
           type: string
 
-
+    OrderSkuDto:
+      type: object
+      properties:
+        id:
+          type: long
+        skuCode:
+          type: string
+        color:
+          type: string
+        size:
+          type: string
+        price:
+          type: integer
+        discountedPrice:
+          type: integer
+        discountPercent:
+          type: integer
+        product:
+          $ref: '#/components/schemas/SkuProductDto'
