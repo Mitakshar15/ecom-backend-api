@@ -23,17 +23,14 @@ topLevelCategories=[
 "Women"
 ]
 secondLevelCategories=[
- "Clothing",
- "Accesories"
+ "Clothing"
 ]
 
 thirdLevelCategories=[
 "Kurta",
 "Jeans",
 "Sale",
-"New Arrivals",
-"Watches",
-"Chain"
+"New Arrivals"
 ]
 
 # List of image URLs
@@ -55,16 +52,16 @@ image_urls = [
     "https://images.unsplash.com/photo-1570653466075-69540bc5ebb3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fGZhc2hpb24lMjBwcm9kdWN0fGVufDB8fDB8fHww"
 ]
 
-# colors = [
-# "Red",
-# "Blue",
-# "White",
-# "Green",
-# "Black"
-# ]
 colors = [
-"VIOLET"
+"Red",
+"Blue",
+"White",
+"Green",
+"Black"
 ]
+# colors = [
+# "VIOLET"
+# ]
 
 # Authorization token
 auth_token = input("ENTER THE AUTH TOKEN: ")  # Replace with the actual token
@@ -102,8 +99,8 @@ def send_request(index):
         # Ensure a 1-second delay globally
         with lock:
             now = time.time()
-            if now - last_request_time < 0.01:  # Check if 1 second has passed
-                time.sleep(0.01 - (now - last_request_time))
+            if now - last_request_time < 0.1:  # Check if 1 second has passed
+                time.sleep(0.1 - (now - last_request_time))
             last_request_time = time.time()
 
         # Send the request with headers
@@ -113,7 +110,7 @@ def send_request(index):
         print(f"Request {index} failed: {e}")
 
 # Send 500 requests with a 1-second delay between them
-with ThreadPoolExecutor(max_workers=10) as executor:  # Set max_workers to control concurrency
-    futures = [executor.submit(send_request, i) for i in range(13, 2001)]
+with ThreadPoolExecutor(max_workers=1) as executor:  # Set max_workers to control concurrency
+    futures = [executor.submit(send_request, i) for i in range(2023, 3000)]
     for future in as_completed(futures):  # Ensure completion of all tasks
         future.result()
