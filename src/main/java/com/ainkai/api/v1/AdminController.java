@@ -12,6 +12,7 @@ package com.ainkai.api.v1;
 import com.ainkai.api.EcomApiV1AdminControllerApi;
 import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.exceptions.OrderException;
+import com.ainkai.exceptions.ProductException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Order;
 import com.ainkai.model.Product;
@@ -82,7 +83,7 @@ public class AdminController implements EcomApiV1AdminControllerApi {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> createProductHandler(@RequestHeader("Authorization")String jwt,@RequestBody CreateProductRequest request){
+    public ResponseEntity<EcomApiServiceBaseApiResponse> createProductHandler(@RequestHeader("Authorization")String jwt,@RequestBody CreateProductRequest request) throws ProductException {
         Product product = productService.createProduct(request);
         if(product !=null) {
             EcomApiServiceBaseApiResponse response = mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("Product created successfully"));
@@ -94,16 +95,11 @@ public class AdminController implements EcomApiV1AdminControllerApi {
         }
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> updateProductHandler(@RequestHeader("Authorization")String jwt,@RequestBody UpdateProductRequest request){
+    public ResponseEntity<EcomApiServiceBaseApiResponse> updateProductHandler(@RequestHeader("Authorization")String jwt,@RequestBody UpdateProductRequest request) throws ProductException {
         Product product = productService.updateProduct(request);
-        if(product !=null) {
             EcomApiServiceBaseApiResponse response = mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("Product updated successfully"));
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-        }
-        else {
-            EcomApiServiceBaseApiResponse errorResponse = mapper.toEcomApiServiceBaseApiResponse(builder.buildErrorApiResponse("Product update failed"));
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        }
+
     }
 
     public ResponseEntity<AllProductResponse> findAllProductHandler(@RequestHeader("Authorization") String jwt){

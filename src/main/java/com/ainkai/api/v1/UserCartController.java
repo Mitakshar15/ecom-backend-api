@@ -4,6 +4,7 @@ import com.ainkai.api.EcomApiV1CartControllerApi;
 import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.exceptions.CartItemException;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Cart;
 import com.ainkai.model.User;
@@ -37,7 +38,7 @@ public class UserCartController implements EcomApiV1CartControllerApi {
     private final EcomApiUserMapper mapper;
     private final ApiResponseBuilder builder;
 
-    public ResponseEntity<CartResponse> getUserCartHandler(@RequestHeader("Authorization")String jwt) {
+    public ResponseEntity<CartResponse> getUserCartHandler(@RequestHeader("Authorization")String jwt) throws UserException {
         User user = userService.findUserProfileByJwt(jwt);
         Cart cart = cartService.findUserCart(user.getId());
         CartResponse cartResponse = mapper.toCartResponse(builder.buildSuccessApiResponse("Cart Fetched succesfully"));
@@ -45,7 +46,7 @@ public class UserCartController implements EcomApiV1CartControllerApi {
         return new ResponseEntity<>(cartResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<AddItemToCartResponse> addItemToCartHandler(@RequestHeader("Authorization")String jwt, AddItemToCartRequest request) throws ProductException  {
+    public ResponseEntity<AddItemToCartResponse> addItemToCartHandler(@RequestHeader("Authorization")String jwt, AddItemToCartRequest request) throws ProductException, UserException {
            User user = userService.findUserProfileByJwt(jwt);
            String  isCartAdded = cartService.addCartitem(user.getId(),request);
            if (isCartAdded != null) {
@@ -58,21 +59,21 @@ public class UserCartController implements EcomApiV1CartControllerApi {
            }
     }
 
-    public ResponseEntity<CartItemResponse> removeCartItemHandler(@PathVariable("cartItemId")Long cartItemId, @RequestHeader("Authorization")String jwt) throws ProductException, CartItemException {
+    public ResponseEntity<CartItemResponse> removeCartItemHandler(@PathVariable("cartItemId")Long cartItemId, @RequestHeader("Authorization")String jwt) throws  CartItemException, UserException {
            User user = userService.findUserProfileByJwt(jwt);
            cartItemService.removeCartItem(user.getId(),cartItemId);
            CartItemResponse response = mapper.toCartItemResponse(builder.buildSuccessApiResponse("ITEM REMOVED"));
            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<CartItemResponse> updateCartItemQuantityHandler(@PathVariable Long cartItemId ,@PathVariable("quantity")Integer quantity, @RequestHeader("Authorization")String jwt)throws ProductException, CartItemException {
+    public ResponseEntity<CartItemResponse> updateCartItemQuantityHandler(@PathVariable Long cartItemId ,@PathVariable("quantity")Integer quantity, @RequestHeader("Authorization")String jwt) throws  CartItemException, UserException {
         User user = userService.findUserProfileByJwt(jwt);
         cartItemService.updateCartItemQuantity(user.getId(),cartItemId,quantity);
         CartItemResponse response = mapper.toCartItemResponse(builder.buildSuccessApiResponse("ITEM Quantity UPDATED"));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> clearCartHandler(@RequestHeader("Authorization")String jwt) throws CartItemException {
+    public ResponseEntity<EcomApiServiceBaseApiResponse> clearCartHandler(@RequestHeader("Authorization")String jwt) throws CartItemException, UserException {
         User user = userService.findUserProfileByJwt(jwt);
         cartItemService.removeAllItems(cartService.findUserCart(user.getId()).getId());
         EcomApiServiceBaseApiResponse response = mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("CART REMOVED"));

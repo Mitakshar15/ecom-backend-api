@@ -24,8 +24,8 @@ public class CartItemServiceImpl implements CartItemService{
 
     @Override
     public CartItem createCartItem(CartItem cartItem) {
-        cartItem.setPrice(cartItem.getProduct().getPrice()* cartItem.getQuantity());
-        cartItem.setDiscountedPrice(cartItem.getProduct().getDiscountedPrice()*cartItem.getQuantity());
+        cartItem.setPrice(cartItem.getSku().getPrice()* cartItem.getQuantity());
+        cartItem.setDiscountedPrice(cartItem.getSku().getDiscountedPrice()*cartItem.getQuantity());
         return cartItemRepo.save(cartItem);
 
     }
@@ -36,8 +36,8 @@ public class CartItemServiceImpl implements CartItemService{
         User user = userService.findUserById(item.getUserId());
         if(user.getId().equals(user_id)){
             item.setQuantity(item.getQuantity()+quantity);
-            item.setPrice(item.getQuantity()* item.getProduct().getPrice());
-            item.setDiscountedPrice(item.getProduct().getDiscountedPrice()*item.getQuantity());
+            item.setPrice(item.getQuantity()* item.getSku().getPrice());
+            item.setDiscountedPrice(item.getSku().getDiscountedPrice()*item.getQuantity());
         }
         else {
             throw new CartItemException("CART NOT UPDATED");
@@ -74,7 +74,7 @@ public class CartItemServiceImpl implements CartItemService{
 
     @Transactional
     @Override
-    public void removeAllItems( Long cartId) throws CartItemException, UserException {
+    public void removeAllItems( Long cartId) throws CartItemException {
          cartItemRepo.removeAllItems(cartId);
     }
 }

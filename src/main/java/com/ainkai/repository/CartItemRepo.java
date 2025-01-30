@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CartItemRepo extends JpaRepository<CartItem,Long> {
 
     //NOTE:: In the @Query() we must use Entity Name and param names only, DO NOT USE TABLE NAME AND COLUMNS
-    @Query("SELECT ci from CartItem ci Where ci.cart = :cart And ci.product=:product And ci.size=:size And ci.userId = :userId")
+    @Query("SELECT ci from CartItem ci Where ci.cart = :cart And ci.sku.product=:product And ci.sku.size=:size And ci.userId = :userId")
     public CartItem isCartItemExists(@Param("cart") Cart cart, @Param("product")Product product, @Param("size") String size, @Param("userId") Long userId);
 
     @Transactional

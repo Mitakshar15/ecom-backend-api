@@ -26,7 +26,7 @@ public interface ProductService {
 
  public List<Product> getAllProducts();
 
- public List<Product> searchProduct(String query);
+ public List<Product> searchProduct(String query) throws ProductException;
 
 
 }

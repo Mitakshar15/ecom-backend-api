@@ -5,7 +5,7 @@ import threading
 import random
 
 # API endpoint for product creation
-url = "https://ecom-backend-api-production.up.railway.app/v1/admin/product/create"
+url = "http://localhost:5454/v1/admin/product/create"
 
 # Static part of the request data
 static_data = {
@@ -55,12 +55,15 @@ image_urls = [
     "https://images.unsplash.com/photo-1570653466075-69540bc5ebb3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fGZhc2hpb24lMjBwcm9kdWN0fGVufDB8fDB8fHww"
 ]
 
+# colors = [
+# "Red",
+# "Blue",
+# "White",
+# "Green",
+# "Black"
+# ]
 colors = [
-"Red",
-"Blue",
-"White",
-"Green",
-"Black"
+"VIOLET"
 ]
 
 # Authorization token
@@ -99,8 +102,8 @@ def send_request(index):
         # Ensure a 1-second delay globally
         with lock:
             now = time.time()
-            if now - last_request_time < 3.0:  # Check if 1 second has passed
-                time.sleep(3.0 - (now - last_request_time))
+            if now - last_request_time < 0.01:  # Check if 1 second has passed
+                time.sleep(0.01 - (now - last_request_time))
             last_request_time = time.time()
 
         # Send the request with headers
@@ -111,6 +114,6 @@ def send_request(index):
 
 # Send 500 requests with a 1-second delay between them
 with ThreadPoolExecutor(max_workers=10) as executor:  # Set max_workers to control concurrency
-    futures = [executor.submit(send_request, i) for i in range(21, 200)]
+    futures = [executor.submit(send_request, i) for i in range(13, 2001)]
     for future in as_completed(futures):  # Ensure completion of all tasks
         future.result()

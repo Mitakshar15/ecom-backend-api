@@ -12,6 +12,7 @@ package com.ainkai.service;
 import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddressDto;
@@ -42,8 +43,10 @@ public class OrderServiceImpl implements OrderService {
     private final ProductService productService;
     private final EcomApiUserMapper mapper;
     private final CartItemService cartItemService;
+    private final SkuRepository skuRepository;
+
     @Override
-    public Order createOrder(User user, AddressDto request)throws ProductException {
+    public Order createOrder(User user, AddressDto request) throws ProductException, UserException {
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
         //Add Checks for Alredy existing Address
@@ -73,22 +76,32 @@ public class OrderServiceImpl implements OrderService {
         //Loop through Each cart item, and add the cart item to respective orderitem
         for(CartItem item :cart.getCartItems() ){
             OrderItem orderItem = new OrderItem();
-            orderItem.setPrice(item.getPrice());
-            orderItem.setProduct(item.getProduct());
-            orderItem.setDiscountedPrice(item.getDiscountedPrice());
+            orderItem.setSku(item.getSku());
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setSize(item.getSize());
-            orderItem.setUserId(item.getUserId());
+            orderItem.setUserId(user.getId());
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
-            Product product = orderItem.getProduct();
-            if(product.getQuantity()>orderItem.getQuantity()){
-                product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            if(item.getSku().getQuantity()>orderItem.getQuantity()){
+                item.getSku().setQuantity(item.getSku().getQuantity()-orderItem.getQuantity());
+                skuRepository.save(item.getSku());
             }
-            UpdateProductRequest request1 = new UpdateProductRequest();
-            request1.productId(product.getId());
-            request1.quantity(product.getQuantity());
-            productService.updateProduct(request1);
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setPrice(item.getPrice());
+//            orderItem.setProduct(item.getProduct());
+//            orderItem.setDiscountedPrice(item.getDiscountedPrice());
+//            orderItem.setQuantity(item.getQuantity());
+//            orderItem.setSize(item.getSize());
+//            orderItem.setUserId(item.getUserId());
+//            OrderItem createdOrderItem = orderItemRepo.save(orderItem);
+//            orderItems.add(createdOrderItem);
+//            Product product = orderItem.getProduct();
+//            if(product.getQuantity()>orderItem.getQuantity()){
+//                product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+//            }
+//            UpdateProductRequest request1 = new UpdateProductRequest();
+//            request1.productId(product.getId());
+//            request1.quantity(product.getQuantity());
+//            productService.updateProduct(request1);
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);
@@ -186,11 +199,6 @@ public class OrderServiceImpl implements OrderService {
         if(opt.isPresent()){
          user = opt.get();
         }
-        if(addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(),address.getCity(),address.getState(),address.getZipCode(),user)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(), address.getCity(), address.getState(), address.getZipCode(), user);
     }
 }
