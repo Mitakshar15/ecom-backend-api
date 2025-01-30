@@ -86,23 +86,6 @@ public class OrderServiceImpl implements OrderService {
                 item.getSku().setQuantity(item.getSku().getQuantity()-orderItem.getQuantity());
                 skuRepository.save(item.getSku());
             }
-//            OrderItem orderItem = new OrderItem();
-//            orderItem.setPrice(item.getPrice());
-//            orderItem.setProduct(item.getProduct());
-//            orderItem.setDiscountedPrice(item.getDiscountedPrice());
-//            orderItem.setQuantity(item.getQuantity());
-//            orderItem.setSize(item.getSize());
-//            orderItem.setUserId(item.getUserId());
-//            OrderItem createdOrderItem = orderItemRepo.save(orderItem);
-//            orderItems.add(createdOrderItem);
-//            Product product = orderItem.getProduct();
-//            if(product.getQuantity()>orderItem.getQuantity()){
-//                product.setQuantity(product.getQuantity()-orderItem.getQuantity());
-//            }
-//            UpdateProductRequest request1 = new UpdateProductRequest();
-//            request1.productId(product.getId());
-//            request1.quantity(product.getQuantity());
-//            productService.updateProduct(request1);
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);

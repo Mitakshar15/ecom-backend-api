@@ -51,28 +51,6 @@ public class CartServiceImpl implements CartService{
         else {
           throw new CartItemException(Constants.DATA_NOT_FOUND_KEY,"ITEM ALREDY EXISTS");
         }
-//        Cart cart = cartRepo.findByUserId(userId);
-//        Product product = productService.findProductById(addItemRequest.getProductId());
-//        addItemRequest.setPrice(product.getDiscountedPrice());
-//        CartItem isPresent = cartItemService.isCartItemExists(cart,product,addItemRequest.getSize(),userId);
-//        if(isPresent == null){
-//            CartItem cartItem = new CartItem();
-//            cartItem.setProduct(product);
-//            cartItem.setCart(cart);
-//            cartItem.setQuantity(addItemRequest.getQuantity());
-//            cartItem.setUserId(userId);
-//
-//            int price = addItemRequest.getQuantity() * addItemRequest.getPrice();
-//            cartItem.setPrice(price);
-//            cartItem.setSize(addItemRequest.getSize());
-//
-//            CartItem createdCartItem = cartItemService.createCartItem(cartItem);
-//            cart.getCartItems().add(createdCartItem);
-//            return "ITEM ADDED SUCCESSFULLY";
-//        }
-//        else {
-//            return null;
-//        }
     }
 
     @Override
