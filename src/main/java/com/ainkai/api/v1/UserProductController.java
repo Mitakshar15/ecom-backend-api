@@ -2,6 +2,8 @@ package com.ainkai.api.v1;
 
 import com.ainkai.api.EcomApiV1ProductControllerApi;
 import com.ainkai.builder.ApiResponseBuilder;
+import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Product;
 import com.ainkai.model.Rating;
@@ -40,7 +42,7 @@ public class UserProductController implements EcomApiV1ProductControllerApi {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<ProductResponse> getProductByIdHandler(@PathVariable("productId")Long productId){
+    public ResponseEntity<ProductResponse> getProductByIdHandler(@PathVariable("productId")Long productId) throws ProductException {
         Product product = productService.findProductById(productId);
         ProductResponse productResponse = mapper.toProductResponse(builder.buildSuccessApiResponse("GET PRODUCT SUCCESS"));
         productResponse.product(mapper.toProductDto(product));
@@ -57,13 +59,13 @@ public class UserProductController implements EcomApiV1ProductControllerApi {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> createRatingHandler(@RequestHeader("Authorization")String jwt,RatingRequest request){
+    public ResponseEntity<EcomApiServiceBaseApiResponse> createRatingHandler(@RequestHeader("Authorization")String jwt,RatingRequest request) throws UserException, ProductException {
         User user = userService.findUserProfileByJwt(jwt);
         ratingService.createRating(request, user);
         return new ResponseEntity<>(mapper.toEcomApiServiceBaseApiResponse(builder.buildSuccessApiResponse("Rating Added")),HttpStatus.OK);
     }
 
-    public ResponseEntity<EcomApiServiceBaseApiResponse> createReviewHandler(@RequestHeader("Authorization")String jwt,ReviewRequest request){
+    public ResponseEntity<EcomApiServiceBaseApiResponse> createReviewHandler(@RequestHeader("Authorization")String jwt,ReviewRequest request) throws UserException, ProductException {
         User user = userService.findUserProfileByJwt(jwt);
         Product product = productService.findProductById(request.getProductId());
         reviewService.createReview(request, user);
@@ -78,7 +80,7 @@ public class UserProductController implements EcomApiV1ProductControllerApi {
            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<MultipleProductResponse> searchProductHandler(@PathVariable("searchParam") String searchParam){
+    public ResponseEntity<MultipleProductResponse> searchProductHandler(@PathVariable("searchParam") String searchParam) throws ProductException {
            MultipleProductResponse response = mapper.toMultipleProductResponse(builder.buildSuccessApiResponse("SEARCH PRODUCTS SUCCESS"));
            response.setProducts(mapper.toProductDtoList(productService.searchProduct(searchParam)));
            return new ResponseEntity<>(response, HttpStatus.OK);

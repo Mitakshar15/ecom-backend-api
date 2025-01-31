@@ -6,6 +6,7 @@ import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Cart;
 import com.ainkai.model.CartItem;
 import com.ainkai.model.Product;
+import com.ainkai.model.Sku;
 
 public interface CartItemService {
 
@@ -13,7 +14,7 @@ public interface CartItemService {
 
     public CartItem updateCartItemQuantity(Long user_id,Long cartItemId,Integer quantity)throws CartItemException, UserException;
 
-    public CartItem isCartItemExists(Cart cart, Product product,String size,Long userId);
+    public CartItem isCartItemExists(Cart cart, Sku sku, Long userId);
 
     public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException;
 

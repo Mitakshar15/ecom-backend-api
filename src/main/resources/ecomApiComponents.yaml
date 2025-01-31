@@ -252,7 +252,7 @@ components:
     AddItemToCartRequest:
       type: "object"
       properties:
-        productId:
+        skuId:
           type: "integer"
           format: "int64"
         size:
@@ -360,8 +360,8 @@ components:
         id:
           type: "integer"
           format: "int64"
-        product:
-          $ref: "#/components/schemas/CartItemProductDto"
+        sku:
+          $ref: "#/components/schemas/CartSkuDto"
         size:
           type: "string"
         quantity:
@@ -427,10 +427,7 @@ components:
         color:
           type: "string"
         size:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SizeDto"
-          uniqueItems: true
+          type: string
         imageUrl:
           type: "string"
         topLevelCategory:
@@ -442,8 +439,11 @@ components:
 
     updateProductRequest:
       type: object
+      required:
+        - skuId
+        - quantity
       properties:
-        productId:
+        skuId:
           type: long
         quantity:
           type: integer
@@ -483,10 +483,10 @@ components:
           type: "string"
         color:
           type: "string"
-        sizes:
+        skus:
           type: "array"
           items:
-            $ref: "#/components/schemas/SizeDto"
+            $ref: "#/components/schemas/SkuDto"
         imageUrl:
           type: "string"
         category:
@@ -498,8 +498,8 @@ components:
         id:
           type: "integer"
           format: "int64"
-        product:
-          $ref: "#/components/schemas/CartItemProductDto"
+        sku:
+          $ref: "#/components/schemas/OrderSkuDto"
         quantity:
           type: "integer"
           format: "int32"
@@ -592,3 +592,74 @@ components:
         review:
           type: string
 
+    SkuDto:
+      type: object
+      properties:
+        id:
+          type: long
+        skuCode:
+          type: string
+        color:
+          type: string
+        size:
+          type: string
+        price:
+          type: integer
+        discountedPrice:
+          type: integer
+        discountPercent:
+          type: integer
+        quantity:
+          type: integer
+
+    CartSkuDto:
+      type: object
+      properties:
+        id:
+          type: long
+        skuCode:
+          type: string
+        color:
+          type: string
+        size:
+          type: string
+        price:
+          type: integer
+        discountedPrice:
+          type: integer
+        discountPercent:
+          type: integer
+        product:
+          $ref: '#/components/schemas/SkuProductDto'
+
+    SkuProductDto:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+        brand:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+
+    OrderSkuDto:
+      type: object
+      properties:
+        id:
+          type: long
+        skuCode:
+          type: string
+        color:
+          type: string
+        size:
+          type: string
+        price:
+          type: integer
+        discountedPrice:
+          type: integer
+        discountPercent:
+          type: integer
+        product:
+          $ref: '#/components/schemas/SkuProductDto'

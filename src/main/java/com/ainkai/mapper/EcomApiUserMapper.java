@@ -95,8 +95,6 @@ public interface EcomApiUserMapper {
 
  AllUserResponse toAllUserResponse(BaseApiResponse response);
 
- Set<Size> toSizeEntity(Set<SizeDto> sizeDto);
-
  AllProductResponse toAllProductResponse(BaseApiResponse response);
 
  List<ProductDto> toProductDtoList(List<Product> productList);

@@ -3,6 +3,7 @@ package com.ainkai.service;
 
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.model.Address;
 import com.ainkai.model.Order;
 import com.ainkai.model.User;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface OrderService  {
 
 
-    public Order createOrder(User user, AddressDto shippingAddress)throws ProductException;
+    public Order createOrder(User user, AddressDto shippingAddress) throws ProductException, UserException, OrderException;
 
     public Order findOrderById(Long orderId) throws OrderException;
 

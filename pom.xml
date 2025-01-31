@@ -228,6 +228,7 @@
 								<useBeanValidation>true</useBeanValidation>
 								<useTags>true</useTags>
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+								<unhandledException>true</unhandledException>
 							</configOptions>
 							<importMappings>
 								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>
@@ -257,6 +258,7 @@
 								<useBeanValidation>true</useBeanValidation>
 								<useTags>true</useTags>
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+								<unhandledException>true</unhandledException>
 							</configOptions>
 							<importMappings>
 								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>
@@ -286,7 +288,8 @@
 								<useBeanValidation>true</useBeanValidation>
 								<useTags>true</useTags>
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
-							</configOptions>
+								<unhandledException>true</unhandledException>
+						</configOptions>
 							<importMappings>
 								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>
 							</importMappings>
@@ -315,6 +318,7 @@
 								<useBeanValidation>true</useBeanValidation>
 								<useTags>true</useTags>
 								<openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+								<unhandledException>true</unhandledException>
 							</configOptions>
 							<importMappings>
 								<importMapping>BaseApiResponse=com.ainkai.api.utils.BaseApiResponse</importMapping>

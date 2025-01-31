@@ -12,6 +12,7 @@ package com.ainkai.api.v1;
 import com.ainkai.api.EcomApiV1UserControllerApi;
 import com.ainkai.builder.ApiResponseBuilder;
 import com.ainkai.config.JwtProvider;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Address;
 import com.ainkai.model.User;
@@ -88,7 +89,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
     }
 
 
-    public ResponseEntity<GetProfileResponse> getUserProfileHandler(@RequestHeader("Authorization")String jwt)  {
+    public ResponseEntity<GetProfileResponse> getUserProfileHandler(@RequestHeader("Authorization")String jwt) throws UserException {
         User user = null;
         user = userService.findUserProfileByJwt(jwt);
         if(user!=null) {
@@ -102,7 +103,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
         }
     }
 
-    public ResponseEntity<EditProfileResponse> updateProfileHandler(@RequestHeader("Authorization")String jwt,EditProfileRequest editProfileRequest) {
+    public ResponseEntity<EditProfileResponse> updateProfileHandler(@RequestHeader("Authorization")String jwt,EditProfileRequest editProfileRequest) throws UserException {
          User loggedUser = userService.findUserProfileByJwt(jwt);
          if(Objects.equals(loggedUser.getId(), editProfileRequest.getId())){
                  User updatedUser = userService.editUser(editProfileRequest);
@@ -116,7 +117,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
          }
     }
 
-    public ResponseEntity<AddNewAddressResponse> addAddressHandler(@RequestHeader("Authorization")String jwt,AddressRequest addressRequest)  {
+    public ResponseEntity<AddNewAddressResponse> addAddressHandler(@RequestHeader("Authorization")String jwt,AddressRequest addressRequest) throws UserException {
         User user = userService.findUserProfileByJwt(jwt);
         if(Objects.equals(user.getId(), addressRequest.getUserId())){
             Address newAddress = userService.addNewAddress(addressRequest);
@@ -130,7 +131,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
 
     }
 
-    public ResponseEntity<DeleteAddressResponse> deleteAddressHandler(@PathVariable("addressId") Long addressId,@RequestHeader("Authorization")String jwt)  {
+    public ResponseEntity<DeleteAddressResponse> deleteAddressHandler(@PathVariable("addressId") Long addressId,@RequestHeader("Authorization")String jwt) throws UserException {
         User user = userService.findUserProfileByJwt(jwt);
         if(user !=null){
             userService.deleteAddress(addressId);
@@ -144,7 +145,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
     }
 
 
-    public ResponseEntity<EditAddressResponse> editAddressHandler(@PathVariable("addressId")Long addressId, @NotNull @RequestHeader("Authorization")String jwt, @Valid AddressRequest addressRequest)  {
+    public ResponseEntity<EditAddressResponse> editAddressHandler(@PathVariable("addressId")Long addressId, @NotNull @RequestHeader("Authorization")String jwt, @Valid AddressRequest addressRequest) throws UserException {
         User user = userService.findUserProfileByJwt(jwt);
         if(Objects.equals(user.getId(),addressRequest.getUserId())){
             userService.editAddress(addressRequest,addressId);
@@ -157,7 +158,7 @@ public class UserProfileController implements EcomApiV1UserControllerApi {
         }
     }
 
-    public ResponseEntity<GetAllAddressResponse> getAllAddressHandler(@RequestHeader("Authorization")String jwt)  {
+    public ResponseEntity<GetAllAddressResponse> getAllAddressHandler(@RequestHeader("Authorization")String jwt) throws UserException {
         User user = userService.findUserProfileByJwt(jwt);
         if(user !=null){
             List<Address> addressList = userService.getAllUserAddresses(user.getId());

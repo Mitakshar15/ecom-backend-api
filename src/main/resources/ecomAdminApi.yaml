@@ -38,13 +38,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -76,13 +76,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -114,13 +114,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -152,13 +152,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -190,13 +190,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/BasicOrderResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -222,13 +222,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/AllUserResponse"
-        '422':
+        '500':
           description: "Order Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -261,13 +261,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
-        '422':
+        '500':
           description: "Product Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -299,13 +299,13 @@ paths:
             application/json:
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse"
-        '422':
+        '500':
           description: "Product Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:
@@ -331,13 +331,13 @@ paths:
             '*/*':
               schema:
                 $ref: "./ecomApiComponents.yaml#/components/schemas/AllProductResponse"
-        '422':
+        '500':
           description: "Product Request is valid but the service was not able to process it ..."
           content:
             application/json:
               schema:
                 $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
-        '400':
+        '404':
           description: "Validations failed for request arguments ..."
           content:
             application/json:

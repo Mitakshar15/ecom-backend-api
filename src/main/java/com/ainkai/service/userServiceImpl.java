@@ -9,6 +9,7 @@ import com.ainkai.model.dtos.AddressRequest;
 import com.ainkai.model.dtos.EditProfileRequest;
 import com.ainkai.repository.AddressRepo;
 import com.ainkai.repository.UserRepo;;
+import com.ainkai.user.domain.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +31,16 @@ public class userServiceImpl implements UserService{
         if(user.isPresent()){
             return user.get();
         }
-        throw new UserException("ERROR KEY",":: USER NOT FOUND WITH ID ::"+ userId);
+        throw new UserException("404",":: USER NOT FOUND WITH ID ::"+ userId);
     }
 
     @Override
-    public User findUserProfileByJwt(String jwt) {
+    public User findUserProfileByJwt(String jwt) throws UserException {
         String email = jwtProvider.getEmailFromJwtToken(jwt);
         User user  =userRepo.findByEmail(email);
+        if(user==null){
+            throw new UserException("404", Constants.REQUEST_ERROR_MSG);
+        }
         return user;
     }
 

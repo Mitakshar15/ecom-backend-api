@@ -9,19 +9,17 @@
 
 package com.ainkai.service;
 
-import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddressDto;
-import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.*;
+import com.ainkai.user.domain.Constants;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
-import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,12 +40,12 @@ public class OrderServiceImpl implements OrderService {
     private final ProductService productService;
     private final EcomApiUserMapper mapper;
     private final CartItemService cartItemService;
+    private final SkuRepository skuRepository;
+
     @Override
-    public Order createOrder(User user, AddressDto request)throws ProductException {
+    public Order createOrder(User user, AddressDto request) throws ProductException, UserException, OrderException {
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
-        //Add Checks for Alredy existing Address
-
         Address finalAddress = new Address();
         if(isShippingAddressExists(user.getId(),shippingAddress)){
            Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
@@ -55,40 +53,28 @@ public class OrderServiceImpl implements OrderService {
                finalAddress = opt.get();
            }
         }
-//        else{
-//            Address address = addressRepo.save(shippingAddress);
-//           finalAddress = address;
-//            //add the saved address to the user Addresses List
-//            user.getAddresses().add(address);
-//            //save the User
-//            userRepo.save(user);
-//       }
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
         //now create a List of Order items and fetch each order Item One by One
         List<OrderItem> orderItems = new ArrayList<>();
         if(cart.getCartItems().isEmpty()){
-            throw new OrderException("There are no cart items in this cart");
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
         }
         //Loop through Each cart item, and add the cart item to respective orderitem
         for(CartItem item :cart.getCartItems() ){
             OrderItem orderItem = new OrderItem();
-            orderItem.setPrice(item.getPrice());
-            orderItem.setProduct(item.getProduct());
-            orderItem.setDiscountedPrice(item.getDiscountedPrice());
+            orderItem.setSku(item.getSku());
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setSize(item.getSize());
-            orderItem.setUserId(item.getUserId());
+            orderItem.setUserId(user.getId());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setPrice(item.getPrice());
+            orderItem.setDiscountedPrice(item.getDiscountedPrice());
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
-            Product product = orderItem.getProduct();
-            if(product.getQuantity()>orderItem.getQuantity()){
-                product.setQuantity(product.getQuantity()-orderItem.getQuantity());
+            if(item.getSku().getQuantity()>orderItem.getQuantity()){
+                item.getSku().setQuantity(item.getSku().getQuantity()-orderItem.getQuantity());
+                skuRepository.save(item.getSku());
             }
-            UpdateProductRequest request1 = new UpdateProductRequest();
-            request1.productId(product.getId());
-            request1.quantity(product.getQuantity());
-            productService.updateProduct(request1);
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);
@@ -121,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
         if(opt.isPresent()){
             return opt.get();
         }
-        throw  new OrderException("ORDER NOT EXISTS WITH ORDER ID : "+ orderId);
+        throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
     }
 
     @Override
@@ -133,6 +119,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.PLACED);
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
         return   orderRepo.save(order);
@@ -141,6 +130,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order confirmedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.CONFIRMED);
         return   orderRepo.save(order);
     }
@@ -148,6 +140,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order shippedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.SHIPPED);
         return   orderRepo.save(order);
     }
@@ -155,6 +150,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order deliveredOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.DELIVERED);
         return  order;
     }
@@ -162,6 +160,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order cancledOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order == null){
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.CANCELLED);
         return  orderRepo.save(order);
     }
@@ -174,6 +175,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         orderRepo.deleteById(orderId);
 
     }
@@ -186,11 +190,6 @@ public class OrderServiceImpl implements OrderService {
         if(opt.isPresent()){
          user = opt.get();
         }
-        if(addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(),address.getCity(),address.getState(),address.getZipCode(),user)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return addressRepo.existsByStreetAddressAndCityAndStateAndZipCodeAndUser(address.getStreetAddress(), address.getCity(), address.getState(), address.getZipCode(), user);
     }
 }

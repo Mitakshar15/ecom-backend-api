@@ -12,6 +12,9 @@ package com.ainkai.api.v1;
 
 import com.ainkai.api.EcomApiV1OrderControllerApi;
 import com.ainkai.builder.ApiResponseBuilder;
+import com.ainkai.exceptions.OrderException;
+import com.ainkai.exceptions.ProductException;
+import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.Order;
 import com.ainkai.model.User;
@@ -39,7 +42,7 @@ public class UserOrderController implements EcomApiV1OrderControllerApi {
     private final ApiResponseBuilder builder;
 
 
-   public ResponseEntity<OrderResponse> createOrderHandler(@RequestHeader("Authorization")String jwt, AddressDto AddressRequest) {
+   public ResponseEntity<OrderResponse> createOrderHandler(@RequestHeader("Authorization")String jwt, AddressDto AddressRequest) throws UserException, ProductException, OrderException {
        User user  = userService.findUserProfileByJwt(jwt);
        Order order = orderService.createOrder(user, AddressRequest);
        OrderResponse response = mapper.toOrderResponse(builder.buildSuccessApiResponse("Order Created Successfully"));
@@ -48,7 +51,7 @@ public class UserOrderController implements EcomApiV1OrderControllerApi {
    }
 
 
-   public ResponseEntity<OrderHistoryResponse> getUserOrderHistoryHandler(@RequestHeader("Authorization")String jwt) {
+   public ResponseEntity<OrderHistoryResponse> getUserOrderHistoryHandler(@RequestHeader("Authorization")String jwt) throws UserException {
        User user = userService.findUserProfileByJwt(jwt);
        OrderHistoryResponse response = mapper.toOrderHistoryResponse(builder.buildSuccessApiResponse("Order History Retrieved Successfully"));
        List<Order> orders = orderService.usersOrderHistory(user.getId());
@@ -56,7 +59,7 @@ public class UserOrderController implements EcomApiV1OrderControllerApi {
        return new ResponseEntity<>(response, HttpStatus.OK);
    }
 
-   public ResponseEntity<OrderResponse> getOrderByIdHandler(@PathVariable("orderId")Long orderId) {
+   public ResponseEntity<OrderResponse> getOrderByIdHandler(@PathVariable("orderId")Long orderId) throws OrderException {
          Order order = orderService.findOrderById(orderId);
          OrderResponse response = mapper.toOrderResponse(builder.buildSuccessApiResponse("Order Retrieved Successfully"));
          response.order(builder.buildOrderDto(order));

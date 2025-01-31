@@ -1,14 +1,8 @@
 package com.ainkai.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.*;
-
 
 @Entity
 @Getter
@@ -22,19 +16,21 @@ public class CartItem {
     private Long id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
-    @ManyToOne
-    private Product product;
-
-    private String size;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sku_id")
+    private Sku sku;
 
     private int quantity;
 
+    @Column(name = "price", nullable = false)
     private Integer price;
 
+    @Column(name = "discounted_price")
     private Integer discountedPrice;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 }
