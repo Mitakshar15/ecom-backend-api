@@ -16,10 +16,26 @@
 
 # 🌟 Project Overview
 * A robust, secure, and scalable e-commerce backend service designed to provide comprehensive API solutions for modern online retail platforms. Built with cutting-edge Java technologies to ensure high performance, security, and extensibility.
-  * Product Page
-  * ![image](https://github.com/user-attachments/assets/f47f0fc6-335a-4c9e-a0b7-439b507203df)
+   * Home Page
+     ![image](https://github.com/user-attachments/assets/63e4ddbb-e430-4d75-9847-8cf45693cc0f)
+
+   * Product Filters
+     ![image](https://github.com/user-attachments/assets/cd55ec1e-93ce-409a-90df-238f146790ac)
+
+   * Product Details Page
+     ![image](https://github.com/user-attachments/assets/f47f0fc6-335a-4c9e-a0b7-439b507203df)
+
+   * Cart Page
+     ![image](https://github.com/user-attachments/assets/f6594388-7909-477e-b5ba-22364828f99b)
+
+   * Checkout Page
+     ![image](https://github.com/user-attachments/assets/6e5bee31-9feb-4734-ad55-84ea81017fa8)
+
+   * Order History Page
+     ![image](https://github.com/user-attachments/assets/6136ae32-304d-4b46-9dde-b10aefed7f2e)
 
 
+  
 
 
 
