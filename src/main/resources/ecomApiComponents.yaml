@@ -427,10 +427,7 @@ components:
         color:
           type: "string"
         size:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SizeDto"
-          uniqueItems: true
+          type: string
         imageUrl:
           type: "string"
         topLevelCategory:

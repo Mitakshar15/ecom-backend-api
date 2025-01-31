@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
      */
     private Sku createSku(CreateProductRequest request, Product product) throws ProductException {
         Sku sku = new Sku();
-        String skuCode = generateSkuCode(request.getBrand(), request.getColor(), request.getTitle());
+        String skuCode = generateSkuCode(request.getBrand(), request.getColor(), request.getTitle(),request.getSize());
         if(skuRepository.existsBySkuCode(skuCode)){
             throw new ProductException("400","Error creating sku: Duplicate Sku Found " + skuCode);
         }
@@ -131,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
         sku.setColor(request.getColor());
         sku.setDiscountPercent(request.getDiscountPercent());
         sku.setDiscountedPrice(request.getDiscountedPrice());
-        sku.setSize("M");
+        sku.setSize(request.getSize());
         sku.setProduct(product);
         product.getSkus().add(sku);
         return skuRepository.save(sku);
@@ -139,8 +139,8 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Generates SKU code
      */
-    private String generateSkuCode(String brand, String color, String title) {
-        return String.format("%s %c %s", brand, color.charAt(0), title.charAt(title.length() - 1)).toUpperCase();
+    private String generateSkuCode(String brand, String color, String title,String size) {
+        return String.format("%s %c %s %s", brand, color.charAt(0), title.charAt(title.length() - 1),size).toUpperCase();
     }
 
     @Override

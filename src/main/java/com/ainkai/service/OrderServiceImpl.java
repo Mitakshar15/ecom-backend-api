@@ -9,21 +9,17 @@
 
 package com.ainkai.service;
 
-import com.ainkai.emailservice.OrderConfirmationEmail;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddressDto;
-import com.ainkai.model.dtos.UpdateProductRequest;
 import com.ainkai.repository.*;
 import com.ainkai.user.domain.Constants;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
-import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -50,8 +46,6 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(User user, AddressDto request) throws ProductException, UserException, OrderException {
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
-        //Add Checks for Alredy existing Address
-
         Address finalAddress = new Address();
         if(isShippingAddressExists(user.getId(),shippingAddress)){
            Optional<Address> opt=addressRepo.findByStreetAddressAndCityAndStateAndZipCodeAndUser(shippingAddress.getStreetAddress(),shippingAddress.getCity(),shippingAddress.getState(),shippingAddress.getZipCode(),user);
@@ -59,14 +53,6 @@ public class OrderServiceImpl implements OrderService {
                finalAddress = opt.get();
            }
         }
-//        else{
-//            Address address = addressRepo.save(shippingAddress);
-//           finalAddress = address;
-//            //add the saved address to the user Addresses List
-//            user.getAddresses().add(address);
-//            //save the User
-//            userRepo.save(user);
-//       }
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
         //now create a List of Order items and fetch each order Item One by One
@@ -80,6 +66,9 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setSku(item.getSku());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setUserId(user.getId());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setPrice(item.getPrice());
+            orderItem.setDiscountedPrice(item.getDiscountedPrice());
             OrderItem createdOrderItem = orderItemRepo.save(orderItem);
             orderItems.add(createdOrderItem);
             if(item.getSku().getQuantity()>orderItem.getQuantity()){
@@ -130,6 +119,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.PLACED);
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
         return   orderRepo.save(order);
@@ -138,6 +130,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order confirmedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.CONFIRMED);
         return   orderRepo.save(order);
     }
@@ -145,6 +140,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order shippedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.SHIPPED);
         return   orderRepo.save(order);
     }
@@ -152,6 +150,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order deliveredOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
+        if(order==null){
+            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
+        }
         order.setOrderStatus(OrderStatus.DELIVERED);
         return  order;
     }

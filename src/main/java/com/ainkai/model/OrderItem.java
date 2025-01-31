@@ -35,4 +35,7 @@ public class OrderItem {
 
     private LocalDateTime deliveryDate;
 
+    private Integer price;
+
+    private Integer DiscountedPrice;
 }

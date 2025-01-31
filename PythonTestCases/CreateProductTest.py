@@ -9,12 +9,7 @@ url = "http://localhost:5454/v1/admin/product/create"
 
 # Static part of the request data
 static_data = {
-    "size": [
-        {"name": "S", "quantity": 20},
-        {"name": "M", "quantity": 30},
-        {"name": "L", "quantity": 50},
-        {"name": "XXL", "quantity": 20}
-    ]
+    "size": "XS"
 }
 
 
@@ -111,6 +106,6 @@ def send_request(index):
 
 # Send 500 requests with a 1-second delay between them
 with ThreadPoolExecutor(max_workers=1) as executor:  # Set max_workers to control concurrency
-    futures = [executor.submit(send_request, i) for i in range(2023, 3000)]
+    futures = [executor.submit(send_request, i) for i in range(1, 200)]
     for future in as_completed(futures):  # Ensure completion of all tasks
         future.result()
