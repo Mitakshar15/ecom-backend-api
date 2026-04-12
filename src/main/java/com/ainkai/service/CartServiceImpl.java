@@ -11,6 +11,7 @@ import com.ainkai.user.domain.Constants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
+    @Transactional
     public String addCartitem(Long userId,@Valid AddItemToCartRequest addItemRequest) throws ProductException {
         Cart cart = cartRepo.findByUserId(userId);
         Sku sku = skuRepository.findById(addItemRequest.getSkuId()).get();
@@ -54,6 +56,7 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
+    @Transactional
     public Cart findUserCart(Long userId) {
         Cart cart = cartRepo.findByUserId(userId);
         int totalPrice = 0;

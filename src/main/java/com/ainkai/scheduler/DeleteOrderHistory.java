@@ -1,33 +1,26 @@
 package com.ainkai.scheduler;
 
-import com.ainkai.exceptions.OrderException;
-import com.ainkai.model.Order;
 import com.ainkai.repository.OrderRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DeleteOrderHistory {
 
     private final OrderRepo orderRepo;
 
-    @Scheduled(cron ="0 0 0 LW * *")
-    public void clearOrderHistoryAfterOneYear()throws OrderException{
-
-        LocalDateTime checkDate = LocalDateTime.now().minusYears(1);
-        List<Order> allOrder = orderRepo.findAll();
-
-        for(Order order : allOrder){
-            if(order.getCreatedAt().isBefore(checkDate)){
-                orderRepo.deleteById(order.getId());
-            }
-        }
-        System.out.println("OLD ORDERS DELETED SUCCESFULLY");
-
+    @Scheduled(cron = "0 0 0 LW * *")
+    @Transactional
+    public void clearOrderHistoryAfterOneYear() {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusYears(1);
+        orderRepo.deleteOrdersOlderThan(cutoffDate);
+        log.info("Deleted orders older than {}", cutoffDate);
     }
 }

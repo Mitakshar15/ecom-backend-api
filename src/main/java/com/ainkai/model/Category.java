@@ -15,7 +15,10 @@ import lombok.*;
 import org.checkerframework.checker.units.qual.A;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", indexes = {
+    @Index(name = "idx_category_name", columnList = "name"),
+    @Index(name = "idx_category_parent", columnList = "parent_category_id")
+})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,7 +34,7 @@ public class Category {
     @Size(max = 50)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 

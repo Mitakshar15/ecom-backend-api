@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "review", indexes = {
+    @Index(name = "idx_review_product_id", columnList = "product_id"),
+    @Index(name = "idx_review_user_id", columnList = "user_id")
+})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,7 +38,7 @@ public class Review {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch= FetchType.EAGER)
+    @OneToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="rating",nullable=false)
     private Rating rating;
 

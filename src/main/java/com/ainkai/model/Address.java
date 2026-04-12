@@ -7,11 +7,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
+@Table(name = "address", indexes = {
+    @Index(name = "idx_address_user_id", columnList = "user_id")
+})
 @Getter
 @Setter
 @AllArgsConstructor

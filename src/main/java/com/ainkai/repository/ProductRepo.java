@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductRepo extends JpaRepository<Product,Long> {
 
-     @Query("SELECT p FROM Product p LEFT JOIN p.skus s " +
+     @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.skus s " +
             "WHERE (:category = '' OR " +
             "       p.category.name LIKE %:category% OR " +
             "       p.category.parentCategory.name LIKE %:category%) " +
@@ -19,10 +19,10 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
             "CASE WHEN :sort = 'price_low' THEN s.discountedPrice END ASC, " +
             "CASE WHEN :sort = 'price_high' THEN s.discountedPrice END DESC, "+
             "p.createdAt DESC")
- public List<Product> filterProducts(@Param("category")String category,@Param("minPrice")Integer minPrice,@Param("maxPrice")Integer maxPrice,@Param("minDiscount") Integer minDiscount,@Param("sort") String sort);
+ List<Product> filterProducts(@Param("category")String category,@Param("minPrice")Integer minPrice,@Param("maxPrice")Integer maxPrice,@Param("minDiscount") Integer minDiscount,@Param("sort") String sort);
 
- @Query("SELECT p FROM Product p WHERE (p.title LIKE %:searchParam%)")
- public List<Product> findProductBySearchParam(String searchParam);
+ @Query("SELECT p FROM Product p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :searchParam, '%'))")
+ List<Product> findProductBySearchParam(@Param("searchParam") String searchParam);
 
  boolean existsProductByTitleAndBrand(String title, String brand);
 

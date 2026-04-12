@@ -14,16 +14,13 @@ import com.ainkai.repository.CategoryRepo;
 import com.ainkai.repository.ProductRepo;
 import com.ainkai.repository.SkuRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "products", allEntries = true)
     public Product createProduct(CreateProductRequest request) throws ProductException {
             Category topLevel = handleTopLevelCategory(request.getTopLevelCategory());
             Category secondLevel = handleSecondLevelCategory(request.getSecondLevelCategory(), topLevel);
@@ -144,6 +142,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "products", allEntries = true),
+        @CacheEvict(value = "productById", key = "#productId")
+    })
     public String deleteProduct(Long productId) throws ProductException {
         Product product = findProductById(productId);
         product.getSkus().clear();
@@ -153,6 +156,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "products", allEntries = true)
     public Product updateProduct(UpdateProductRequest request) throws ProductException {
         Product product  = findProductById(request.getSkuId());
         if(product==null){
@@ -165,6 +170,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "productById", key = "#productId")
     public Product findProductById(Long productId) throws ProductException {
         Optional<Product> opt = productRepo.findById(productId);
 
@@ -175,11 +182,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> findProductByCategry(String category) {
         return List.of();
     }
 
 @Override
+@Transactional(readOnly = true)
 public MultipleProductResponse getAllFilteredProducts(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
     // Todo: Removed the Pagination Since OpenApi Does Not Support Page<>
     MultipleProductResponse productResponse = new MultipleProductResponse();
@@ -227,11 +236,13 @@ public MultipleProductResponse getAllFilteredProducts(String category, List<Stri
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return productRepo.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> searchProduct(String query) throws ProductException {
         List<Product> productList = productRepo.findProductBySearchParam(query);
         if(productList.isEmpty()){

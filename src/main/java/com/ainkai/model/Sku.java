@@ -26,6 +26,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "skus", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"sku_code"})
+}, indexes = {
+        @Index(name = "idx_sku_product_id", columnList = "product_id"),
+        @Index(name = "idx_sku_color", columnList = "color"),
+        @Index(name = "idx_sku_discounted_price", columnList = "discounted_price")
 })
 public class Sku {
 

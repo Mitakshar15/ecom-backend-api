@@ -11,6 +11,8 @@ import com.ainkai.repository.ReviewRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class ReviewServiceImpl implements ReviewService {
      private final RatingService ratingService;
 
     @Override
+    @Transactional
     public Review createReview(ReviewRequest request, User user) throws ProductException {
         Product product = productService.findProductById(request.getProductId());
         com.ainkai.model.dtos.RatingRequest ratingRequest = new com.ainkai.model.dtos.RatingRequest();
@@ -38,6 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getAllProductReview(Long productId) {
         return reviewRepo.getAllProductReviews(productId);
     }

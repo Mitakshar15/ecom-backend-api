@@ -2,11 +2,13 @@ package com.ainkai.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "cart")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,6 +25,7 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "cart_items")
+    @BatchSize(size = 25)
     private Set<CartItem> cartItems = new HashSet<>();
 
     @Column(name = "total_price")

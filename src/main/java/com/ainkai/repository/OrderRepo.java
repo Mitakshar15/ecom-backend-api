@@ -1,26 +1,34 @@
 package com.ainkai.repository;
 
 import com.ainkai.model.Order;
-import org.aspectj.weaver.ast.Or;
+import com.ainkai.user.domain.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderRepo extends JpaRepository<Order,Long> {
 
-    /*  NOTE: ADD A METHOD TO RETURN ONLY A LIST OF ORDER_ID INORDER TO HIDE THE USERDETAILS FROM THE CONSOLE */
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.OrderStatus IN :statuses ORDER BY o.createdAt DESC")
+    List<Order> getUsersOrders(@Param("userId") Long userId, @Param("statuses") List<OrderStatus> statuses);
 
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC")
+    List<Order> getAllUserOrders(@Param("userId") Long userId);
 
-    @Query("SELECT o FROM Order o WHERE o.user.id =:userId AND (o.OrderStatus = PLACED OR o.OrderStatus = CONFIRMED OR o.OrderStatus = SHIPPED OR o.OrderStatus = DELIVERED OR o.OrderStatus = PENDING OR o.OrderStatus = CANCELLED)")
-    public List<Order> getUsersOrders(@Param("userId") Long userId);
+    @Query("SELECT o FROM Order o WHERE o.OrderStatus = :status")
+    List<Order> getOrdersByStatus(@Param("status") OrderStatus status);
 
-    @Query("SELECT o FROM Order o WHERE o.OrderStatus = PENDING")
-    public List<Order> getUsersPendingOrders();
+    @Modifying
+    @Query("DELETE FROM Order o WHERE o.OrderStatus = :status")
+    void deleteAllByStatus(@Param("status") OrderStatus status);
 
+    @Modifying
+    @Query("DELETE FROM Order o WHERE o.createdAt < :cutoffDate")
+    void deleteOrdersOlderThan(@Param("cutoffDate") LocalDateTime cutoffDate);
 
     List<Order> findAllByOrderByCreatedAtDesc();
-
 
 }

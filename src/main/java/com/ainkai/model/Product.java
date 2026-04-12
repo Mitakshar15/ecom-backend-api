@@ -10,8 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
+@Table(name = "product", indexes = {
+    @Index(name = "idx_product_category_id", columnList = "category_id"),
+    @Index(name = "idx_product_title_brand", columnList = "title, brand"),
+    @Index(name = "idx_product_created_at", columnList = "created_at")
+})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,12 +42,15 @@ public class Product {
 
   @OneToMany(mappedBy="product", cascade=CascadeType.ALL, orphanRemoval=true)
   @JsonIgnore
+  @BatchSize(size = 25)
   private List<Sku> skus = new ArrayList<>();
 
   @OneToMany(mappedBy="product", cascade=CascadeType.ALL, orphanRemoval=true)
+  @BatchSize(size = 25)
   private List<Rating> ratings  = new ArrayList<>();
 
   @OneToMany(mappedBy="product", cascade=CascadeType.ALL, orphanRemoval=true)
+  @BatchSize(size = 25)
   private List<Review> reviews = new ArrayList<>();
 
   @Column(name="num_ratings")

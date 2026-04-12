@@ -21,6 +21,7 @@ import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final SkuRepository skuRepository;
 
     @Override
+    @Transactional
     public Order createOrder(User user, AddressDto request) throws ProductException, UserException, OrderException {
         Address shippingAddress = mapper.toAddressEntity(request);
         shippingAddress.setUser(user);
@@ -55,30 +57,37 @@ public class OrderServiceImpl implements OrderService {
         }
         //Now Fetch the cart of the particular user
         Cart cart = cartService.findUserCart(user.getId());
-        //now create a List of Order items and fetch each order Item One by One
-        List<OrderItem> orderItems = new ArrayList<>();
         if(cart.getCartItems().isEmpty()){
             throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
         }
-        //Loop through Each cart item, and add the cart item to respective orderitem
-        for(CartItem item :cart.getCartItems() ){
+
+        //Build all order items in memory first (avoid saving one-by-one)
+        List<OrderItem> orderItems = new ArrayList<>();
+        List<Sku> skusToUpdate = new ArrayList<>();
+
+        for(CartItem item : cart.getCartItems()){
             OrderItem orderItem = new OrderItem();
             orderItem.setSku(item.getSku());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setUserId(user.getId());
-            orderItem.setQuantity(item.getQuantity());
             orderItem.setPrice(item.getPrice());
             orderItem.setDiscountedPrice(item.getDiscountedPrice());
-            OrderItem createdOrderItem = orderItemRepo.save(orderItem);
-            orderItems.add(createdOrderItem);
-            if(item.getSku().getQuantity()>orderItem.getQuantity()){
-                item.getSku().setQuantity(item.getSku().getQuantity()-orderItem.getQuantity());
-                skuRepository.save(item.getSku());
+            orderItems.add(orderItem);
+
+            if(item.getSku().getQuantity() > orderItem.getQuantity()){
+                item.getSku().setQuantity(item.getSku().getQuantity() - orderItem.getQuantity());
+                skusToUpdate.add(item.getSku());
             }
         }
+
+        // Batch save SKU quantity updates
+        if(!skusToUpdate.isEmpty()){
+            skuRepository.saveAll(skusToUpdate);
+        }
+
+        // Create and save order (cascade will save order items)
         Order createdOrder = new Order();
         createdOrder.setUser(user);
-        createdOrder.setOrderItemList(orderItems);
         createdOrder.setTotalPrice(cart.getTotalPrice());
         createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
         createdOrder.setDiscount(cart.getDiscount());
@@ -90,18 +99,22 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
         createdOrder.setCreatedAt(LocalDateTime.now());
         createdOrder.setDeliveryDate(LocalDateTime.now());
-        Order saveOrder = orderRepo.save(createdOrder);
-        //Update the order items to set the order or (set the ORDER for orderItems)
+
+        // Set bidirectional relationship so cascade persist handles order items
         for(OrderItem item : orderItems){
-            item.setOrder(saveOrder);
-            orderItemRepo.save(item);
+            item.setOrder(createdOrder);
         }
-        //Clear the cart Before creating the order
+        createdOrder.setOrderItemList(orderItems);
+
+        Order savedOrder = orderRepo.save(createdOrder);
+
+        //Clear the cart after creating the order
         cartItemService.removeAllItems(cart.getId());
-        return saveOrder;
+        return savedOrder;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Order findOrderById(Long orderId) throws OrderException {
         Optional<Order> opt = orderRepo.findById(orderId);
         if(opt.isPresent()){
@@ -111,80 +124,68 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> usersOrderHistory(Long userId) {
-       List<Order> orderList = orderRepo.getUsersOrders(userId);
-       return orderList;
+       return orderRepo.getAllUserOrders(userId);
     }
 
     @Override
+    @Transactional
     public Order placedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order==null){
-            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         order.setOrderStatus(OrderStatus.PLACED);
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
-        return   orderRepo.save(order);
+        return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public Order confirmedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order==null){
-            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         order.setOrderStatus(OrderStatus.CONFIRMED);
-        return   orderRepo.save(order);
+        return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public Order shippedOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order==null){
-            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         order.setOrderStatus(OrderStatus.SHIPPED);
-        return   orderRepo.save(order);
+        return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public Order deliveredOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order==null){
-            throw  new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         order.setOrderStatus(OrderStatus.DELIVERED);
-        return  order;
+        return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public Order cancledOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order == null){
-            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         order.setOrderStatus(OrderStatus.CANCELLED);
         return  orderRepo.save(order);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
        return  orderRepo.findAll();
     }
 
     @Override
+    @Transactional
     public void deleteOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
-        if(order==null){
-            throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
-        }
         orderRepo.deleteById(orderId);
-
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isShippingAddressExists(Long userId, Address address) {
-
         Optional<User> opt = userRepo.findById(userId);
         User user = new User();
         if(opt.isPresent()){

@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "cart_item", indexes = {
+    @Index(name = "idx_cart_item_cart_id", columnList = "cart_id"),
+    @Index(name = "idx_cart_item_user_id", columnList = "user_id"),
+    @Index(name = "idx_cart_item_sku_id", columnList = "sku_id")
+})
 @Getter
 @Setter
 @AllArgsConstructor
