@@ -99,4 +99,10 @@ public interface EcomApiUserMapper {
 
  List<ProductDto> toProductDtoList(List<Product> productList);
 
+ InventoryResponse toInventoryResponse(BaseApiResponse response);
+
+ LowStockResponse toLowStockResponse(BaseApiResponse response);
+
+ InventoryHistoryResponse toInventoryHistoryResponse(BaseApiResponse response);
+
 }

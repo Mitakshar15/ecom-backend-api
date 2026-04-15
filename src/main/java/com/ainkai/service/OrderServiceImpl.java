@@ -9,6 +9,7 @@
 
 package com.ainkai.service;
 
+import com.ainkai.exceptions.InventoryException;
 import com.ainkai.exceptions.OrderException;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.exceptions.UserException;
@@ -20,6 +21,7 @@ import com.ainkai.user.domain.Constants;
 import com.ainkai.user.domain.OrderStatus;
 import com.ainkai.user.domain.PaymentStatus;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
 
@@ -42,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private final EcomApiUserMapper mapper;
     private final CartItemService cartItemService;
     private final SkuRepository skuRepository;
+    private final InventoryService inventoryService;
 
     @Override
     @Transactional
@@ -61,31 +65,17 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderException(Constants.DATA_NOT_FOUND_KEY,Constants.ORDER_NOT_FOUND_MESSAGE);
         }
 
-        //Build all order items in memory first (avoid saving one-by-one)
-        List<OrderItem> orderItems = new ArrayList<>();
-        List<Sku> skusToUpdate = new ArrayList<>();
-
-        for(CartItem item : cart.getCartItems()){
-            OrderItem orderItem = new OrderItem();
-            orderItem.setSku(item.getSku());
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setUserId(user.getId());
-            orderItem.setPrice(item.getPrice());
-            orderItem.setDiscountedPrice(item.getDiscountedPrice());
-            orderItems.add(orderItem);
-
-            if(item.getSku().getQuantity() > orderItem.getQuantity()){
-                item.getSku().setQuantity(item.getSku().getQuantity() - orderItem.getQuantity());
-                skusToUpdate.add(item.getSku());
+        // Validate stock for ALL cart items before processing any
+        for (CartItem item : cart.getCartItems()) {
+            try {
+                inventoryService.validateStock(item.getSku().getId(), item.getQuantity());
+            } catch (InventoryException e) {
+                throw new OrderException(Constants.INSUFFICIENT_STOCK_KEY,
+                        "Cannot place order: " + e.getMessage());
             }
         }
 
-        // Batch save SKU quantity updates
-        if(!skusToUpdate.isEmpty()){
-            skuRepository.saveAll(skusToUpdate);
-        }
-
-        // Create and save order (cascade will save order items)
+        // Create order first to get an orderId for inventory logging
         Order createdOrder = new Order();
         createdOrder.setUser(user);
         createdOrder.setTotalPrice(cart.getTotalPrice());
@@ -100,16 +90,39 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setCreatedAt(LocalDateTime.now());
         createdOrder.setDeliveryDate(LocalDateTime.now());
 
-        // Set bidirectional relationship so cascade persist handles order items
-        for(OrderItem item : orderItems){
-            item.setOrder(createdOrder);
-        }
-        createdOrder.setOrderItemList(orderItems);
+        // Build order items and decrement stock via inventory service
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem item : cart.getCartItems()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setSku(item.getSku());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setUserId(user.getId());
+            orderItem.setPrice(item.getPrice());
+            orderItem.setDiscountedPrice(item.getDiscountedPrice());
+            orderItem.setOrder(createdOrder);
+            orderItems.add(orderItem);
 
+            // Decrement stock with audit trail
+            try {
+                inventoryService.decrementStock(
+                        item.getSku().getId(),
+                        item.getQuantity(),
+                        createdOrder.getOrderId()
+                );
+            } catch (InventoryException e) {
+                throw new OrderException(Constants.INSUFFICIENT_STOCK_KEY,
+                        "Failed to reserve inventory: " + e.getMessage());
+            }
+        }
+
+        createdOrder.setOrderItemList(orderItems);
         Order savedOrder = orderRepo.save(createdOrder);
 
         //Clear the cart after creating the order
         cartItemService.removeAllItems(cart.getId());
+
+        log.info("Order created: orderId={}, userId={}, items={}",
+                savedOrder.getOrderId(), user.getId(), orderItems.size());
         return savedOrder;
     }
 
@@ -167,7 +180,22 @@ public class OrderServiceImpl implements OrderService {
     public Order cancledOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
         order.setOrderStatus(OrderStatus.CANCELLED);
-        return  orderRepo.save(order);
+
+        // Restore stock for all order items when cancelling
+        for (OrderItem item : order.getOrderItemList()) {
+            try {
+                inventoryService.restoreStock(
+                        item.getSku().getId(),
+                        item.getQuantity(),
+                        order.getOrderId()
+                );
+            } catch (InventoryException e) {
+                log.error("Failed to restore stock for SKU {} on order cancellation: {}",
+                        item.getSku().getId(), e.getMessage());
+            }
+        }
+
+        return orderRepo.save(order);
     }
 
     @Override

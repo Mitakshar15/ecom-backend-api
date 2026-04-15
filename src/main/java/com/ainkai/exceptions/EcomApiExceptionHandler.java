@@ -119,6 +119,42 @@ public class EcomApiExceptionHandler {
 
         return new ResponseEntity<>(apiResponse, statusCode);
     }
+    @ExceptionHandler(InventoryException.class)
+    public ResponseEntity<EcomApiServiceBaseApiResponse> inventoryExceptionHandler(InventoryException ex,
+                                                                                   WebRequest request) {
+        HttpStatusCode statusCode = switch (ex.getMessageKey()) {
+            case Constants.DATA_NOT_FOUND_KEY -> HttpStatus.NOT_FOUND;
+            case Constants.REQUEST_ERROR_KEY -> HttpStatus.BAD_REQUEST;
+            case Constants.INSUFFICIENT_STOCK_KEY -> HttpStatus.CONFLICT;
+            default -> HttpStatus.UNPROCESSABLE_ENTITY;
+        };
+
+        EcomApiServiceBaseApiResponse apiResponse = (EcomApiServiceBaseApiResponse) new EcomApiServiceBaseApiResponse()
+                .metadata(new Metadata().timestamp(Instant.now()))
+                .status(new Status().statusCode(statusCode.value()).statusMessage(ex.getMessage())
+                        .statusMessageKey(ex.getMessageKey()));
+
+        return new ResponseEntity<>(apiResponse, statusCode);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<EcomApiServiceBaseApiResponse> orderExceptionHandler(OrderException ex,
+                                                                               WebRequest request) {
+        HttpStatusCode statusCode = switch (ex.getMessageKey()) {
+            case Constants.DATA_NOT_FOUND_KEY -> HttpStatus.NOT_FOUND;
+            case Constants.REQUEST_ERROR_KEY -> HttpStatus.BAD_REQUEST;
+            case Constants.INSUFFICIENT_STOCK_KEY -> HttpStatus.CONFLICT;
+            default -> HttpStatus.UNPROCESSABLE_ENTITY;
+        };
+
+        EcomApiServiceBaseApiResponse apiResponse = (EcomApiServiceBaseApiResponse) new EcomApiServiceBaseApiResponse()
+                .metadata(new Metadata().timestamp(Instant.now()))
+                .status(new Status().statusCode(statusCode.value()).statusMessage(ex.getMessage())
+                        .statusMessageKey(ex.getMessageKey()));
+
+        return new ResponseEntity<>(apiResponse, statusCode);
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<EcomApiServiceBaseApiResponse> missingServletRequestParameterExceptionHandler(
             MissingServletRequestParameterException ex, WebRequest request) {

@@ -1,10 +1,10 @@
 package com.ainkai.service;
 
 import com.ainkai.exceptions.CartItemException;
+import com.ainkai.exceptions.InventoryException;
 import com.ainkai.exceptions.UserException;
 import com.ainkai.model.*;
 import com.ainkai.repository.CartItemRepo;
-import com.ainkai.repository.CartRepo;
 import com.ainkai.user.domain.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ public class CartItemServiceImpl implements CartItemService{
 
      private final CartItemRepo cartItemRepo;
      private final UserService userService;
+     private final InventoryService inventoryService;
 
     @Override
     public CartItem createCartItem(CartItem cartItem) {
@@ -29,11 +30,22 @@ public class CartItemServiceImpl implements CartItemService{
     }
 
     @Override
+    @Transactional
     public CartItem updateCartItemQuantity(Long user_id, Long cartItemId, Integer quantity) throws CartItemException, UserException {
         CartItem item = findCartItemById(cartItemId);
         User user = userService.findUserById(item.getUserId());
         if(user.getId().equals(user_id)){
-            item.setQuantity(item.getQuantity()+quantity);
+            int newQuantity = item.getQuantity() + quantity;
+
+            // Validate stock before updating quantity
+            try {
+                inventoryService.validateStock(item.getSku().getId(), newQuantity);
+            } catch (InventoryException e) {
+                throw new CartItemException(Constants.INSUFFICIENT_STOCK_KEY,
+                        "Cannot update quantity: " + e.getMessage());
+            }
+
+            item.setQuantity(newQuantity);
             item.setPrice(item.getQuantity()* item.getSku().getPrice());
             item.setDiscountedPrice(item.getSku().getDiscountedPrice()*item.getQuantity());
         }

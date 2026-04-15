@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Ecom-Api-Service - Inventory API
+  description: |-
+    Inventory Management Endpoints for Ecom Api Service
+  version: 0.1.0
+  contact:
+    name: API Support
+    email: work.mitakshar@gmail.com
+servers:
+  - url: http://localhost:5454
+tags:
+  - name: ecomApi V1 - Inventory Controller
+    description: Inventory Management Endpoints version 1
+paths:
+  /v1/admin/inventory/restock:
+    put:
+      tags:
+        - ecomApi V1 Inventory-Controller
+      summary: "Restock SKU"
+      operationId: "restockSkuHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/RestockRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/InventoryResponse"
+        '400':
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '404':
+          description: "SKU not found"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/inventory/adjust:
+    put:
+      tags:
+        - ecomApi V1 Inventory-Controller
+      summary: "Adjust Stock Level"
+      operationId: "adjustStockHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "./ecomApiComponents.yaml#/components/schemas/AdjustStockRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/InventoryResponse"
+        '400':
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+        '404':
+          description: "SKU not found"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'
+
+  /v1/admin/inventory/low-stock:
+    get:
+      tags:
+        - ecomApi V1 Inventory-Controller
+      summary: "Get Low Stock SKUs"
+      operationId: "getLowStockHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+        - name: "threshold"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: 10
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/LowStockResponse"
+
+  /v1/admin/inventory/out-of-stock:
+    get:
+      tags:
+        - ecomApi V1 Inventory-Controller
+      summary: "Get Out of Stock SKUs"
+      operationId: "getOutOfStockHandler"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/LowStockResponse"
+
+  /v1/admin/inventory/history/{skuId}:
+    get:
+      tags:
+        - ecomApi V1 Inventory-Controller
+      summary: "Get Inventory History for a SKU"
+      operationId: "getInventoryHistoryHandler"
+      parameters:
+        - name: "skuId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "Authorization"
+          in: "header"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "./ecomApiComponents.yaml#/components/schemas/InventoryHistoryResponse"
+        '404':
+          description: "SKU not found"
+          content:
+            application/json:
+              schema:
+                $ref: './ecomApiComponents.yaml#/components/schemas/EcomApiServiceBaseApiResponse'

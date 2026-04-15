@@ -18,6 +18,7 @@ import com.ainkai.mapper.EcomApiUserMapper;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.*;
 import com.ainkai.user.domain.Constants;
+import com.ainkai.user.domain.InventoryAction;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -95,5 +96,46 @@ public class ApiResponseBuilder {
         response.setMetadata(new Metadata().timestamp(Instant.now()));
         response.setStatus(new Status().statusCode(HttpStatus.OK.value()).statusMessage(statusMessage)
                 .statusMessageKey(Constants.RESPONSE_MESSAGE_KEY_SUCCESS));
+    }
+
+    public InventorySkuDto buildInventorySkuDto(Sku sku) {
+        InventorySkuDto dto = new InventorySkuDto();
+        dto.setId(sku.getId());
+        dto.setSkuCode(sku.getSkuCode());
+        dto.setColor(sku.getColor());
+        dto.setSize(sku.getSize());
+        dto.setPrice(sku.getPrice());
+        dto.setDiscountedPrice(sku.getDiscountedPrice());
+        dto.setQuantity(sku.getQuantity());
+        if (sku.getProduct() != null) {
+            dto.setProductTitle(sku.getProduct().getTitle());
+            dto.setProductBrand(sku.getProduct().getBrand());
+        }
+        return dto;
+    }
+
+    public List<InventorySkuDto> buildInventorySkuDtoList(List<Sku> skus) {
+        return skus.stream()
+                .map(this::buildInventorySkuDto)
+                .collect(Collectors.toList());
+    }
+
+    public InventoryLogDto buildInventoryLogDto(InventoryLog log) {
+        InventoryLogDto dto = new InventoryLogDto();
+        dto.setId(log.getId());
+        dto.setSkuCode(log.getSku().getSkuCode());
+        dto.setAction(log.getAction().name());
+        dto.setQuantityChange(log.getQuantityChange());
+        dto.setQuantityBefore(log.getQuantityBefore());
+        dto.setQuantityAfter(log.getQuantityAfter());
+        dto.setReferenceId(log.getReferenceId());
+        dto.setReason(log.getReason());
+        return dto;
+    }
+
+    public List<InventoryLogDto> buildInventoryLogDtoList(List<InventoryLog> logs) {
+        return logs.stream()
+                .map(this::buildInventoryLogDto)
+                .collect(Collectors.toList());
     }
 }

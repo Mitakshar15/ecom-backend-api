@@ -58,6 +58,9 @@ public class Sku {
     @Column(name="quantity", nullable=false)
     private int quantity;
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
     @JsonIgnore

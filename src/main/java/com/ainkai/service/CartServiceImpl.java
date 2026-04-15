@@ -2,6 +2,7 @@ package com.ainkai.service;
 
 
 import com.ainkai.exceptions.CartItemException;
+import com.ainkai.exceptions.InventoryException;
 import com.ainkai.exceptions.ProductException;
 import com.ainkai.model.*;
 import com.ainkai.model.dtos.AddItemToCartRequest;
@@ -21,6 +22,7 @@ public class CartServiceImpl implements CartService{
     private final CartItemService cartItemService;
     private final ProductService productService;
     private final SkuRepository skuRepository;
+    private final InventoryService inventoryService;
 
     @Override
     public Cart createCart(User user) {
@@ -35,6 +37,15 @@ public class CartServiceImpl implements CartService{
     public String addCartitem(Long userId,@Valid AddItemToCartRequest addItemRequest) throws ProductException {
         Cart cart = cartRepo.findByUserId(userId);
         Sku sku = skuRepository.findById(addItemRequest.getSkuId()).get();
+
+        // Validate stock before adding to cart
+        try {
+            inventoryService.validateStock(sku.getId(), addItemRequest.getQuantity());
+        } catch (InventoryException e) {
+            throw new ProductException(Constants.INSUFFICIENT_STOCK_KEY,
+                    "Cannot add to cart: " + e.getMessage());
+        }
+
         addItemRequest.setPrice(sku.getDiscountedPrice());
         CartItem isPresent = cartItemService.isCartItemExists(cart,sku,userId);
         if(isPresent==null) {
